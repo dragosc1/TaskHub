@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using TaskHub.Models;
 
 namespace TaskHub.Database
 {
-    public class TaskHubDbcontext : DbContext
+    public class TaskHubDbcontext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Models.Task> Tasks { get; set; }
         public DbSet<Comentariu> Comentarii { get; set; }
@@ -16,6 +18,7 @@ namespace TaskHub.Database
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             // Added composite primary keys
             modelBuilder.Entity<Echipa>().HasKey(e => new { e.IdUtilizator, e.IdProiect });
             modelBuilder.Entity<Comentariu>().HasKey(c => new { c.Id, c.IdTask, c.IdUtilizator });
