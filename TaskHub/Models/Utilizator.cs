@@ -23,6 +23,7 @@ namespace TaskHub.Models
         public string Telefon { get; set; } 
 
         public virtual IEnumerable<Echipa>? Echipe { get; set; }
-        public virtual IEnumerable<Proiect>? Proiecte { get; set; }  
+        
+        public virtual IEnumerable<Comentariu>? Comentarii { get; set; }
     }
 }
