@@ -25,7 +25,6 @@ namespace TaskHub.Models
         [DataType(DataType.DateTime)]
         public DateTime DataFinalizare { get; set; }
 
-        [StringLength(500)]
-        public string Continut { get; set; }
+        public string ContinutMedia { get; set; }
     }
 }
