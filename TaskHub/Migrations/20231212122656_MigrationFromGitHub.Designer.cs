@@ -12,8 +12,8 @@ using TaskHub.Database;
 namespace TaskHub.Migrations
 {
     [DbContext(typeof(TaskHubDbcontext))]
-    [Migration("20231210140301_IntroducedIdentity")]
-    partial class IntroducedIdentity
+    [Migration("20231212122656_MigrationFromGitHub")]
+    partial class MigrationFromGitHub
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -356,11 +356,22 @@ namespace TaskHub.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("RoleId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Telefon")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Utilizatori");
                 });
@@ -463,6 +474,23 @@ namespace TaskHub.Migrations
                         .IsRequired();
 
                     b.Navigation("Proiect");
+                });
+
+            modelBuilder.Entity("TaskHub.Models.Utilizator", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TaskHub.Database.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TaskHub.Models.Proiect", b =>

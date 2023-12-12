@@ -25,10 +25,10 @@ namespace TaskHub.Models
         [DataType(DataType.DateTime)]
         public DateTime DataFinalizare { get; set; }
 
-        public string ContinutMedia { get; set; }
+        public string? ContinutMedia { get; set; }
 
-        public virtual Proiect Proiect { get; set; }
+        public virtual Proiect? Proiect { get; set; }
 
-        public virtual IEnumerable<Comentariu> Comentarii { get; set;}
+        public virtual IEnumerable<Comentariu>? Comentarii { get; set;}
     }
 }

@@ -1,0 +1,21 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>Show Task</h2>
+<br />
+<p>@ViewBag.Task.Titlu</p>
+<br />
+<p>Descriere: @ViewBag.Task.Descriere</p>
+<p>Status: @ViewBag.Task.Status</p>
+<p>Data inceput: @ViewBag.Task.DataStart</p>
+<p>Data final: @ViewBag.Task.DataFinalizare</p>
+<br />
+<a href="/Students/Edit/@ViewBag.Task.Id">Editare task</a>
+<br />
+<form method="post" action="/Students/Delete/@ViewBag.Student.StudentID">
+    <button type="submit">Sterge studentul</button>
+</form>
+<hr />

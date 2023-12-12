@@ -1,0 +1,21 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h2>Lista Taskuri</h2>
+<br />
+@foreach(var task in ViewBag.Tasks)
+{
+    <p>@task.Titlu</p>
+    <br />
+    <p>Descriere: @task.Descriere</p>
+    <p>Status: @task.Status</p>
+    <p>Data inceput: @task.DataStart</p>
+    <p>Data final: @task.DataFinalizare</p>
+    <br />
+    <a href="/Students/Show/@task.Id">Afisare task </a>
+    <br />
+    <a href="/Students/Edit/@task.Id">Editare task</a>
+    <hr />
+}

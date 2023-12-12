@@ -16,3 +16,11 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.field-validation-valid {
+    display: none;
+}
+
+.validation-summary-valid {
+    display: none;
+}
