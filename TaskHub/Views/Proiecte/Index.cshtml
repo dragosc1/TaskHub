@@ -1,0 +1,20 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h2>Lista Proiectelor</h2>
+<br/>
+@foreach(var proiect in ViewBag.Proiecte)
+{
+    <p>@proiect.NumeProiect</p>
+    <br/>
+    <p>Descriere:</p>
+    <p>@proiect.Descriere</p>
+    <br/>
+    <a href="/Proiecte/Show/@proiect.Id">Afisare Proiect</a>
+    <br/>
+    <a href="/Proiecte/Edit/@proiect.Id">Editare Proiect</a>
+    <hr/>
+}

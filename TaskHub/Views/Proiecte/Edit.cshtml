@@ -1,0 +1,28 @@
+﻿@model TaskHub.Models.Proiect
+@*
+*@
+@{
+}
+
+<h2>Formular Editare Proiect</h2>
+@using (Html.BeginForm(actionName : "Edit", controllerName : "Proiecte"))
+{
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <hr/>
+
+    @Html.Label("NumeProiect", "Numele Proiectului")
+    <br/>
+    @Html.TextBox("NumeProiect", Model.NumeProiect, new { @class = "form-control"})
+    @Html.ValidationMessage("NumeProiect", null, new { @class = "text-danger"})
+    <br />
+    <br />
+
+    @Html.Label("Descriere", "Descrierea Proiectului")
+    <br />
+    @Html.TextArea("Desciere", Model.Descriere, new { @class = "form-control" })
+    @Html.ValidationMessage("Descriere", null, new { @class = "text-danger" })
+    <br />
+    <br />
+
+    <button class="btn btn-success" type="submit">Modifica Proiectul</button>
+}

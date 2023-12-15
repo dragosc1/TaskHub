@@ -4,7 +4,7 @@
 *@
 
 <h2> Formular editare task</h2>
-@using (Html.BeginForm(actionName: "New", controllerName: "Tasks"))
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Tasks"))
 {
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <hr />
@@ -44,5 +44,5 @@
     <br />
     <br />
 
-    <button class="btn btn-success" type="submit">Adauga Taskul</button>
+    <button class="btn btn-success" type="submit">Modifica Taskul</button>
 }
