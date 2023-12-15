@@ -5,7 +5,7 @@ using TaskHub.Models;
 
 namespace TaskHub.Database
 {
-    public class TaskHubDbcontext : IdentityDbContext<ApplicationUser>
+    public class TaskHubDbcontext : IdentityDbContext<IdentityUser>
     {
         public DbSet<Models.Task> Tasks { get; set; }
         public DbSet<Comentariu> Comentarii { get; set; }
@@ -13,8 +13,8 @@ namespace TaskHub.Database
         public DbSet<Proiect> Proiecte { get; set; }
         public DbSet<Utilizator> Utilizatori { get; set; }
 
-        public TaskHubDbcontext(DbContextOptions<TaskHubDbcontext> options) : base(options) { 
-        
+        public TaskHubDbcontext(DbContextOptions<TaskHubDbcontext> options) : base(options) {
+
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -41,6 +41,9 @@ namespace TaskHub.Database
                     .HasOne(t => t.Task)
                     .WithMany(c => c.Comentarii)
                     .HasForeignKey(c => c.IdTask);
+            
         }
+        
+
     }
 }

@@ -13,7 +13,10 @@ builder.Services.AddDbContext<TaskHubDbcontext>(options => options.UseSqlServer(
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
-    .AddEntityFrameworkStores<TaskHubDbcontext>();
+    .AddEntityFrameworkStores<TaskHubDbcontext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -34,6 +37,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 using (var scope = app.Services.CreateScope())
 {

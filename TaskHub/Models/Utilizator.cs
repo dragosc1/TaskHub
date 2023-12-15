@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
 using TaskHub.Database;
 
 namespace TaskHub.Models
@@ -28,7 +29,6 @@ namespace TaskHub.Models
         
         public virtual IEnumerable<Comentariu>? Comentarii { get; set; }
 
-        public virtual ApplicationUser User { get; set; }   
-        public virtual IdentityRole Role { get; set; }  
+        public virtual IdentityUser User { get; set; }   
     }
 }

@@ -99,6 +99,9 @@ namespace TaskHub.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
+        [Required]
+        [Display(Name = "Role")]
+        public string Role { get; set; }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
