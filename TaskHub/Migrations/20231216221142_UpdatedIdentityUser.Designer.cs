@@ -12,8 +12,8 @@ using TaskHub.Database;
 namespace TaskHub.Migrations
 {
     [DbContext(typeof(TaskHubDbcontext))]
-    [Migration("20231212122656_MigrationFromGitHub")]
-    partial class MigrationFromGitHub
+    [Migration("20231216221142_UpdatedIdentityUser")]
+    partial class UpdatedIdentityUser
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -194,6 +194,10 @@ namespace TaskHub.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("Nume")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -202,6 +206,11 @@ namespace TaskHub.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Prenume")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
@@ -228,14 +237,14 @@ namespace TaskHub.Migrations
 
             modelBuilder.Entity("TaskHub.Models.Comentariu", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdTask")
+                    b.Property<int>("IdTask")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdUtilizator")
-                        .HasColumnType("int");
+                    b.Property<string>("IdUtilizator")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Continut")
                         .IsRequired()
@@ -253,10 +262,10 @@ namespace TaskHub.Migrations
 
             modelBuilder.Entity("TaskHub.Models.Echipa", b =>
                 {
-                    b.Property<int?>("IdUtilizator")
-                        .HasColumnType("int");
+                    b.Property<string>("IdUtilizator")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("IdProiect")
+                    b.Property<int>("IdProiect")
                         .HasColumnType("int");
 
                     b.Property<string>("RolInProiect")
@@ -303,7 +312,6 @@ namespace TaskHub.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ContinutMedia")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataFinalizare")
@@ -316,7 +324,7 @@ namespace TaskHub.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProiectId")
+                    b.Property<int?>("ProiectId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -333,47 +341,6 @@ namespace TaskHub.Migrations
                     b.HasIndex("ProiectId");
 
                     b.ToTable("Tasks");
-                });
-
-            modelBuilder.Entity("TaskHub.Models.Utilizator", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nume")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Prenume")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("RoleId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Telefon")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Utilizatori");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -435,7 +402,7 @@ namespace TaskHub.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskHub.Models.Utilizator", "Utilizator")
+                    b.HasOne("TaskHub.Database.ApplicationUser", "Utilizator")
                         .WithMany("Comentarii")
                         .HasForeignKey("IdUtilizator")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -454,7 +421,7 @@ namespace TaskHub.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskHub.Models.Utilizator", "Utilizator")
+                    b.HasOne("TaskHub.Database.ApplicationUser", "Utilizator")
                         .WithMany("Echipe")
                         .HasForeignKey("IdUtilizator")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -469,28 +436,16 @@ namespace TaskHub.Migrations
                 {
                     b.HasOne("TaskHub.Models.Proiect", "Proiect")
                         .WithMany("Tasks")
-                        .HasForeignKey("ProiectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProiectId");
 
                     b.Navigation("Proiect");
                 });
 
-            modelBuilder.Entity("TaskHub.Models.Utilizator", b =>
+            modelBuilder.Entity("TaskHub.Database.ApplicationUser", b =>
                 {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Comentarii");
 
-                    b.HasOne("TaskHub.Database.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
+                    b.Navigation("Echipe");
                 });
 
             modelBuilder.Entity("TaskHub.Models.Proiect", b =>
@@ -503,13 +458,6 @@ namespace TaskHub.Migrations
             modelBuilder.Entity("TaskHub.Models.Task", b =>
                 {
                     b.Navigation("Comentarii");
-                });
-
-            modelBuilder.Entity("TaskHub.Models.Utilizator", b =>
-                {
-                    b.Navigation("Comentarii");
-
-                    b.Navigation("Echipe");
                 });
 #pragma warning restore 612, 618
         }

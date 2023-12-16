@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TaskHub.Database;
 using TaskHub.Models;
@@ -13,6 +14,8 @@ namespace TaskHub.Controllers
         {
             this.db = context;
         }
+
+        [Authorize(Roles = "membru,administrator,organizator")]
         public IActionResult Index()
         {
             var proiecte = from proiect in db.Proiecte

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TaskHub.Migrations
 {
-    public partial class MigrationFromGitHub : Migration
+    public partial class UpdatedIdentityUser : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,6 +28,8 @@ namespace TaskHub.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Nume = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Prenume = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -169,32 +171,28 @@ namespace TaskHub.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Utilizatori",
+                name: "Echipe",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nume = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Prenume = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefon = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    RoleId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    IdUtilizator = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    IdProiect = table.Column<int>(type: "int", nullable: false),
+                    RolInProiect = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Utilizatori", x => x.Id);
+                    table.PrimaryKey("PK_Echipe", x => new { x.IdUtilizator, x.IdProiect });
                     table.ForeignKey(
-                        name: "FK_Utilizatori_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        name: "FK_Echipe_AspNetUsers_IdUtilizator",
+                        column: x => x.IdUtilizator,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Utilizatori_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        name: "FK_Echipe_Proiecte_IdProiect",
+                        column: x => x.IdProiect,
+                        principalTable: "Proiecte",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -208,8 +206,8 @@ namespace TaskHub.Migrations
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DataStart = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataFinalizare = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ContinutMedia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ProiectId = table.Column<int>(type: "int", nullable: false)
+                    ContinutMedia = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProiectId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -218,33 +216,7 @@ namespace TaskHub.Migrations
                         name: "FK_Tasks_Proiecte_ProiectId",
                         column: x => x.ProiectId,
                         principalTable: "Proiecte",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Echipe",
-                columns: table => new
-                {
-                    IdUtilizator = table.Column<int>(type: "int", nullable: false),
-                    IdProiect = table.Column<int>(type: "int", nullable: false),
-                    RolInProiect = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Echipe", x => new { x.IdUtilizator, x.IdProiect });
-                    table.ForeignKey(
-                        name: "FK_Echipe_Proiecte_IdProiect",
-                        column: x => x.IdProiect,
-                        principalTable: "Proiecte",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Echipe_Utilizatori_IdUtilizator",
-                        column: x => x.IdUtilizator,
-                        principalTable: "Utilizatori",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -252,7 +224,7 @@ namespace TaskHub.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    IdUtilizator = table.Column<int>(type: "int", nullable: false),
+                    IdUtilizator = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IdTask = table.Column<int>(type: "int", nullable: false),
                     Continut = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
                 },
@@ -260,15 +232,15 @@ namespace TaskHub.Migrations
                 {
                     table.PrimaryKey("PK_Comentarii", x => new { x.Id, x.IdTask, x.IdUtilizator });
                     table.ForeignKey(
-                        name: "FK_Comentarii_Tasks_IdTask",
-                        column: x => x.IdTask,
-                        principalTable: "Tasks",
+                        name: "FK_Comentarii_AspNetUsers_IdUtilizator",
+                        column: x => x.IdUtilizator,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Comentarii_Utilizatori_IdUtilizator",
-                        column: x => x.IdUtilizator,
-                        principalTable: "Utilizatori",
+                        name: "FK_Comentarii_Tasks_IdTask",
+                        column: x => x.IdTask,
+                        principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -331,16 +303,6 @@ namespace TaskHub.Migrations
                 name: "IX_Tasks_ProiectId",
                 table: "Tasks",
                 column: "ProiectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Utilizatori_RoleId",
-                table: "Utilizatori",
-                column: "RoleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Utilizatori_UserId",
-                table: "Utilizatori",
-                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -367,19 +329,16 @@ namespace TaskHub.Migrations
                 name: "Echipe");
 
             migrationBuilder.DropTable(
-                name: "Tasks");
-
-            migrationBuilder.DropTable(
-                name: "Utilizatori");
-
-            migrationBuilder.DropTable(
-                name: "Proiecte");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "Tasks");
+
+            migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Proiecte");
         }
     }
 }
