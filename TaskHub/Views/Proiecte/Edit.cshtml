@@ -7,20 +7,22 @@
 <h2>Formular Editare Proiect</h2>
 @using (Html.BeginForm(actionName : "Edit", controllerName : "Proiecte"))
 {
+
+    @Html.HiddenFor(model => model.Id)
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-    <hr/>
+    <hr />
 
-    @Html.Label("NumeProiect", "Numele Proiectului")
-    <br/>
-    @Html.TextBox("NumeProiect", Model.NumeProiect, new { @class = "form-control"})
-    @Html.ValidationMessage("NumeProiect", null, new { @class = "text-danger"})
-    <br />
-    <br />
+    <div class="form-group">
+        @Html.LabelFor(model => model.NumeProiect, "Numele Proiectului")
+        @Html.TextBoxFor(model => model.NumeProiect, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.NumeProiect, "", new { @class = "text-danger" })
+    </div>
 
-    @Html.Label("Descriere", "Descrierea Proiectului")
-    <br />
-    @Html.TextArea("Desciere", Model.Descriere, new { @class = "form-control" })
-    @Html.ValidationMessage("Descriere", null, new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Descriere, "Descrierea Proiectului")
+        @Html.TextAreaFor(model => model.Descriere, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Descriere, "", new { @class = "text-danger" })
+    </div>
     <br />
     <br />
 

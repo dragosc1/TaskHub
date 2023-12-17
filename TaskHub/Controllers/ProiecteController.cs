@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using TaskHub.Database;
 using TaskHub.Models;
 
@@ -25,7 +26,7 @@ namespace TaskHub.Controllers
             _roleManager = roleManager;
         }
 
-        [Authorize(Roles = "membru,administrator,organizator")]
+        [Authorize(Roles = "membru,administrator")]
         public IActionResult Index()
         {
             var proiecte = from proiect in db.Proiecte
@@ -34,6 +35,7 @@ namespace TaskHub.Controllers
             return View();
         }
 
+        [Authorize(Roles = "membru,administrator")]
         [Route("/proiecte/show/{idProiect}")]
         public IActionResult Show([FromRoute] int idProiect)
         {
@@ -42,12 +44,14 @@ namespace TaskHub.Controllers
             return View();
         }
 
+        [Authorize(Roles = "membru,administrator")]
         public IActionResult New() 
         { 
             return View(); 
         }
 
         [HttpPost]
+        [Authorize(Roles = "membru,administrator")]
         public async Task<IActionResult> New(Proiect p)
         {
             try
@@ -66,32 +70,50 @@ namespace TaskHub.Controllers
         }
 
         [Route("/proiecte/edit/{idProiect}")]
+        [Authorize(Roles = "membru,administrator")]
         public IActionResult Edit(int idProiect) 
         {
-            var proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);
+            Proiect proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);
             return View(proiect);
         }
 
         [HttpPost]
-        public ActionResult Edit(int idProiect, Proiect p)
+        [Authorize(Roles = "membru,administrator")]
+        [Route("proiecte/edit/{p}")]
+        public ActionResult Edit(Proiect model)
         {
-            var proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);
-            try 
+            // Check if the model is valid
+            if (ModelState.IsValid)
             {
-                proiect.NumeProiect = p.NumeProiect;
-                proiect.Descriere = p.Descriere;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                try
+                {
+                    var existingProiect = db.Proiecte.Find(model.Id);
+
+                    if (existingProiect == null)
+                    {
+                        return NotFound();
+                    }
+
+                    existingProiect.NumeProiect = model.NumeProiect;
+                    existingProiect.Descriere = model.Descriere;
+
+                    db.SaveChanges();
+
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    ModelState.AddModelError("", "Concurrency conflict occurred.");
+                    return View(model);
+                }
             }
 
-            catch(Exception) 
-            {
-                return View();
-            }
+            return View(model);
         }
 
         [HttpPost]
         [Route("/proiecte/delete/{idProiect}")]
+        [Authorize(Roles = "membru,administrator")]
         public ActionResult Delete(int idProiect) 
         {
             var proiect = db.Proiecte.FirstOrDefault(p =>p.Id == idProiect);
