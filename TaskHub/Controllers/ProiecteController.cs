@@ -26,7 +26,7 @@ namespace TaskHub.Controllers
             _roleManager = roleManager;
         }
 
-        [Authorize(Roles = "membru,administrator")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         public IActionResult Index()
         {
             var proiecte = from proiect in db.Proiecte
@@ -35,7 +35,7 @@ namespace TaskHub.Controllers
             return View();
         }
 
-        [Authorize(Roles = "membru,administrator")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         [Route("/proiecte/show/{idProiect}")]
         public IActionResult Show([FromRoute] int idProiect)
         {
@@ -44,21 +44,21 @@ namespace TaskHub.Controllers
             return View();
         }
 
-        [Authorize(Roles = "membru,administrator")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         public IActionResult New() 
         { 
             return View(); 
         }
 
         [HttpPost]
-        [Authorize(Roles = "membru,administrator")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         public async Task<IActionResult> New(Proiect p)
         {
             try
             {
                 db.Proiecte.Add(p);
                 db.SaveChanges();
-                Echipa echipa = new Echipa() { IdProiect = db.Proiecte.FirstOrDefault(pr => pr == p).Id, IdUtilizator = (await _userManager.GetUserAsync(User)).Id, RolInProiect = await _roleManager.FindByNameAsync("organizator")};
+                Echipa echipa = new Echipa() { IdProiect = db.Proiecte.FirstOrDefault(pr => pr == p).Id, IdUtilizator = (await _userManager.GetUserAsync(User)).Id };
                 db.Echipe.Add(echipa);
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -70,7 +70,7 @@ namespace TaskHub.Controllers
         }
 
         [Route("/proiecte/edit/{idProiect}")]
-        [Authorize(Roles = "membru,administrator")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         public IActionResult Edit(int idProiect) 
         {
             Proiect proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);
@@ -78,7 +78,7 @@ namespace TaskHub.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "membru,administrator")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         [Route("proiecte/edit/{p}")]
         public ActionResult Edit(Proiect model)
         {
@@ -113,7 +113,7 @@ namespace TaskHub.Controllers
 
         [HttpPost]
         [Route("/proiecte/delete/{idProiect}")]
-        [Authorize(Roles = "membru,administrator")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         public ActionResult Delete(int idProiect) 
         {
             var proiect = db.Proiecte.FirstOrDefault(p =>p.Id == idProiect);

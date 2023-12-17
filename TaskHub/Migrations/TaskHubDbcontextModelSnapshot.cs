@@ -264,15 +264,9 @@ namespace TaskHub.Migrations
                     b.Property<int>("IdProiect")
                         .HasColumnType("int");
 
-                    b.Property<string>("RolInProiectId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("IdUtilizator", "IdProiect");
 
                     b.HasIndex("IdProiect");
-
-                    b.HasIndex("RolInProiectId");
 
                     b.ToTable("Echipe");
                 });
@@ -424,15 +418,7 @@ namespace TaskHub.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "RolInProiect")
-                        .WithMany()
-                        .HasForeignKey("RolInProiectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Proiect");
-
-                    b.Navigation("RolInProiect");
 
                     b.Navigation("Utilizator");
                 });

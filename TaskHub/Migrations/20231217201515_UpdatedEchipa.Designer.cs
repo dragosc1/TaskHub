@@ -12,8 +12,8 @@ using TaskHub.Database;
 namespace TaskHub.Migrations
 {
     [DbContext(typeof(TaskHubDbcontext))]
-    [Migration("20231216221831_NameIsOptional")]
-    partial class NameIsOptional
+    [Migration("20231217201515_UpdatedEchipa")]
+    partial class UpdatedEchipa
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -265,11 +265,6 @@ namespace TaskHub.Migrations
 
                     b.Property<int>("IdProiect")
                         .HasColumnType("int");
-
-                    b.Property<string>("RolInProiect")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
 
                     b.HasKey("IdUtilizator", "IdProiect");
 

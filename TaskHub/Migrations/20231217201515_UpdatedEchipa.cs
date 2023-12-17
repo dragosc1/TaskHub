@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TaskHub.Migrations
 {
-    public partial class UpdatedIdentityUser : Migration
+    public partial class UpdatedEchipa : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -28,8 +28,8 @@ namespace TaskHub.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Nume = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Prenume = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Nume = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Prenume = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -175,8 +175,7 @@ namespace TaskHub.Migrations
                 columns: table => new
                 {
                     IdUtilizator = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    IdProiect = table.Column<int>(type: "int", nullable: false),
-                    RolInProiect = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    IdProiect = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
