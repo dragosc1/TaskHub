@@ -5,14 +5,12 @@
 }
 <h2>Show Proiect</h2>
 <br/>
-<p>@ViewBag.Proiect.NumeProiect</p>
-<br/>
 <p>Descriere:</p>
 <p>@ViewBag.Proiect.Descriere</p>
 <br/>
 <a href="/Proiecte/Edit/@ViewBag.Proiect.Id">Editare Proiect</a>
 <br/>
-<form method="post" action="/Students/Delete/@ViewBag.Proiect.Id">
+<form method="post" action="/Proiecte/Delete/@ViewBag.Proiect.Id">
     <button type="submit">Stergere Proiect</button>   
 </form>
 

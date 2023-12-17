@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
 using TaskHub.Database;
 
 namespace TaskHub.Models
@@ -10,10 +11,10 @@ namespace TaskHub.Models
 
         [StringLength(500)]
         [Required(ErrorMessage = "Rolul in proiect este obligatoriu")]
-        public string RolInProiect { get; set; }
+        public virtual IdentityRole RolInProiect { get; set; }
 
-        public virtual ApplicationUser Utilizator { get; set; }
-        public virtual Proiect Proiect { get; set; }
+        public virtual ApplicationUser? Utilizator { get; set; }
+        public virtual Proiect? Proiect { get; set; }
 
     }
 }

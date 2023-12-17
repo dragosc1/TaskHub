@@ -15,8 +15,8 @@ namespace TaskHub.Models
         [StringLength(500)]
         public string Descriere { get; set; }
         
-        public virtual IEnumerable<Echipa> Echipe { get; set; }
-        public virtual IEnumerable<Task> Tasks { get; set; }
+        public virtual IEnumerable<Echipa>? Echipe { get; set; }
+        public virtual IEnumerable<Task>? Tasks { get; set; }
 
     }
 }

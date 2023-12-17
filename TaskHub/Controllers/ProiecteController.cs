@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using TaskHub.Database;
@@ -9,10 +10,19 @@ namespace TaskHub.Controllers
     public class ProiecteController : Controller
     {
         private readonly TaskHubDbcontext db;
+        private readonly ILogger<ProiecteController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ProiecteController(TaskHubDbcontext context)
+        public ProiecteController(TaskHubDbcontext context, 
+            ILogger<ProiecteController> logger,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             this.db = context;
+            _logger = logger;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         [Authorize(Roles = "membru,administrator,organizator")]
@@ -24,10 +34,11 @@ namespace TaskHub.Controllers
             return View();
         }
 
-        public ActionResult Show(int idProiect)
+        [Route("/proiecte/show/{idProiect}")]
+        public IActionResult Show([FromRoute] int idProiect)
         {
-            var proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);    
-            ViewBag.Proiecte = proiect;
+            var proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);
+            ViewBag.Proiect = proiect;
             return View();
         }
 
@@ -37,11 +48,14 @@ namespace TaskHub.Controllers
         }
 
         [HttpPost]
-        public IActionResult New(Proiect p)
+        public async Task<IActionResult> New(Proiect p)
         {
             try
             {
                 db.Proiecte.Add(p);
+                db.SaveChanges();
+                Echipa echipa = new Echipa() { IdProiect = db.Proiecte.FirstOrDefault(pr => pr == p).Id, IdUtilizator = (await _userManager.GetUserAsync(User)).Id, RolInProiect = await _roleManager.FindByNameAsync("organizator")};
+                db.Echipe.Add(echipa);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -51,6 +65,7 @@ namespace TaskHub.Controllers
             }
         }
 
+        [Route("/proiecte/edit/{idProiect}")]
         public IActionResult Edit(int idProiect) 
         {
             var proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);
@@ -76,6 +91,7 @@ namespace TaskHub.Controllers
         }
 
         [HttpPost]
+        [Route("/proiecte/delete/{idProiect}")]
         public ActionResult Delete(int idProiect) 
         {
             var proiect = db.Proiecte.FirstOrDefault(p =>p.Id == idProiect);
