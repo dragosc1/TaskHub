@@ -1,18 +1,33 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Runtime.Intrinsics.Arm;
+using System.Threading.Tasks;
 using TaskHub.Database;
+using TaskHub.Models;
 
 namespace TaskHub.Controllers
 {
     public class TasksController : Controller
     {
         private readonly TaskHubDbcontext db;
+        private readonly ILogger<ProiecteController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public TasksController(TaskHubDbcontext context)
+        public TasksController(TaskHubDbcontext context,
+            ILogger<ProiecteController> logger,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager)
         {
             this.db = context;
+            _logger = logger;
+            _userManager = userManager;
+            _roleManager = roleManager;
         }
 
+        [Authorize(Roles = "membru,administrator,organizator")]
         public IActionResult Index()
         {
             var Tasks = from task in db.Tasks
@@ -21,19 +36,23 @@ namespace TaskHub.Controllers
             return View();
         }
 
-        public ActionResult Show(int idTask) 
+        [Authorize(Roles = "membru,administrator,organizator")]
+        [Route("/tasks/show/{idTask}")]
+        public ActionResult Show([FromRoute] int idTask) 
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
             ViewBag.Task = task;
             return View(); 
         }
 
+        [Authorize(Roles = "administrator,organizator")]
         public IActionResult New() 
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize(Roles = "administrator,organizator")]
         public IActionResult New(Models.Task t) 
         {
             try
@@ -48,35 +67,52 @@ namespace TaskHub.Controllers
             }
         }
 
+        [Route("/tasks/edit/{idTask}")]
+        [Authorize(Roles = "administrator,organizator")]
         public IActionResult Edit(int idTask) 
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
             return View(task);
         }
 
-        [HttpPost]
-        public ActionResult Edit(int idTask, Models.Task requestTask) 
-        {
-            var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
-            try
-            {
-                task.Titlu = requestTask.Titlu;
-                task.Descriere = requestTask.Descriere;
-                task.Status = requestTask.Status;
-                task.DataStart = requestTask.DataStart;
-                task.DataFinalizare = requestTask.DataFinalizare;
-                task.ContinutMedia = requestTask.ContinutMedia;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
 
-            catch (Exception) 
+        [HttpPost]
+        [Authorize(Roles = "administrator,organizator")]
+        [Route("tasks/edit/{t}")]
+        public ActionResult Edit(Models.Task model)
+        {
+            if (ModelState.IsValid)
             {
-                return RedirectToAction("Edit", task.Id);
+                try
+                {
+                    var task = db.Tasks.Find(model.Id);
+
+                    if (task == null)
+                    {
+                        return NotFound();
+                    }
+
+                    task.Titlu = model.Titlu;
+                    task.Descriere = model.Descriere;
+                    task.Status = model.Status;
+                    task.DataStart = model.DataStart;
+                    task.DataFinalizare = model.DataFinalizare;
+                    task.ContinutMedia = model.ContinutMedia;
+                    db.SaveChanges();
+                    return RedirectToAction("Index");
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    ModelState.AddModelError("", "Concurrency conflict occurred.");
+                    return View(model);
+                }
             }
+            return View(model);
         }
 
         [HttpPost]
+        [Route("/tasks/delete/{idTask}")]
+        [Authorize(Roles = "administrator,organizator")]
         public ActionResult Delete(int idTask) 
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);

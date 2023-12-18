@@ -70,7 +70,7 @@ namespace TaskHub.Controllers
         }
 
         [Route("/proiecte/edit/{idProiect}")]
-        [Authorize(Roles = "membru,administrator,organizator")]
+        [Authorize(Roles = "administrator,organizator")]
         public IActionResult Edit(int idProiect) 
         {
             Proiect proiect = db.Proiecte.FirstOrDefault(p => p.Id == idProiect);
@@ -78,7 +78,7 @@ namespace TaskHub.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "membru,administrator,organizator")]
+        [Authorize(Roles = "administrator,organizator")]
         [Route("proiecte/edit/{p}")]
         public ActionResult Edit(Proiect model)
         {
@@ -113,7 +113,7 @@ namespace TaskHub.Controllers
 
         [HttpPost]
         [Route("/proiecte/delete/{idProiect}")]
-        [Authorize(Roles = "membru,administrator,organizator")]
+        [Authorize(Roles = "administrator,organizator")]
         public ActionResult Delete(int idProiect) 
         {
             var proiect = db.Proiecte.FirstOrDefault(p =>p.Id == idProiect);
