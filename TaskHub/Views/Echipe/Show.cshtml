@@ -1,0 +1,26 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h1>Echipa cu proiectul: @ViewBag.Proiect.NumeProiect </h1>
+<br />
+<p>Membrii: </p>
+<ul>
+    @foreach(var membru in ViewBag.Membrii)
+    {
+        <li style="list-style: none">@membru</li>
+        <form method="post" action="/Echipe/Delete/@membru/@ViewBag.Proiect.Id">
+            <button type="submit">Stergere membru</button>
+        </form>
+    }
+</ul>
+
+@if (ViewBag.Organizator == true)
+{
+    <p> Tu esti un organizator al echipei! </p>
+}
+else
+{
+    <p> Tu esti un membru al echipei! </p>
+}
