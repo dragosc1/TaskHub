@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 using TaskHub.Database;
 using TaskHub.Models;
 
@@ -61,6 +63,29 @@ namespace TaskHub.Controllers
                 Echipa echipa = new Echipa() { IdProiect = db.Proiecte.FirstOrDefault(pr => pr == p).Id, IdUtilizator = (await _userManager.GetUserAsync(User)).Id };
                 db.Echipe.Add(echipa);
                 db.SaveChanges();
+
+                // set user to "organizator"
+                var user = await _userManager.FindByNameAsync(User.Identity.Name);
+                if (User.IsInRole("membru"))
+                {
+
+                    await _userManager.AddToRoleAsync(user, "organizator");
+                    await _userManager.RemoveFromRoleAsync(user, "membru");
+
+                    // Get the updated user claims
+                    var updatedUser = await _userManager.FindByNameAsync(User.Identity.Name);
+                    var claims = await _userManager.GetClaimsAsync(updatedUser);
+
+                    // Update the claims for the current user
+                    var identity = User.Identity as ClaimsIdentity;
+                    identity?.RemoveClaim(identity.FindFirst(ClaimTypes.Role));
+                    identity?.AddClaims(claims);
+
+                    // Refresh the user's identity using SignInManager
+                    var signInManager = HttpContext.RequestServices.GetRequiredService<SignInManager<ApplicationUser>>();
+                    await signInManager.RefreshSignInAsync(user);
+                }
+
                 return RedirectToAction("Index");
             }
             catch (Exception) 
