@@ -1,0 +1,26 @@
+﻿@using static TaskHub.Controllers.EchipeController;
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    int idproiect = ViewBag.IdProiect;
+}
+
+@model MemberViewModel
+
+
+<h2>Formular adaugare Membru echipa</h2>
+@using (Html.BeginForm(actionName: "New", controllerName: "Echipe"))
+{
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <hr />
+
+    @Html.Hidden("idProiect", idproiect);
+
+    @Html.Label("email", "Alege membrul")
+    @Html.DropDownListFor(model => model.email, Model.Members, "Select Member", new { @class = "form-control" })
+    @Html.ValidationMessage("email", null, new { @class = "text-danger"})
+    <br />
+
+    <button class="btn btn-success" type="submit">Adauga Membru</button>
+}
