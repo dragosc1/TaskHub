@@ -55,6 +55,11 @@ namespace TaskHub.Controllers
             ViewBag.Membrii = Membrii;
             ViewBag.Organizator = Organizator;
 
+            var Tasks = _db.Tasks.
+                Where(t => t.Proiect.Id == Id);
+
+            ViewBag.Tasks = Tasks;  
+
             return View();
         }
         public class MemberViewModel

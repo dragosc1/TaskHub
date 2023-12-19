@@ -14,8 +14,10 @@
     <p>Data inceput: @task.DataStart</p>
     <p>Data final: @task.DataFinalizare</p>
     <br />
-    <a href="/Students/Show/@task.Id">Afisare task </a>
+    <a href="/Tasks/Show/@task.Id">Afisare task </a>
     <br />
-    <a href="/Students/Edit/@task.Id">Editare task</a>
+    <a href="/Tasks/Edit/@task.Id">Editare task</a>
     <hr />
 }
+
+<a href="@Url.Action("New", "Tasks", new { idProiect = ViewBag.Id })">Creaza un nou task</a>

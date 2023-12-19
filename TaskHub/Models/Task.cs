@@ -27,6 +27,7 @@ namespace TaskHub.Models
 
         public string? ContinutMedia { get; set; }
 
+        public int? ProiectId { get; set; }
         public virtual Proiect? Proiect { get; set; }
 
         public virtual IEnumerable<Comentariu>? Comentarii { get; set;}

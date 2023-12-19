@@ -28,17 +28,22 @@ namespace TaskHub.Controllers
         }
 
         [Authorize(Roles = "membru,administrator,organizator")]
-        public IActionResult Index()
+        [Route("/Tasks/Index/{idProiect}")]
+        public IActionResult Index(int idProiect)
         {
-            var Tasks = from task in db.Tasks
-                        select task;
+            var Tasks = db.Tasks.Where(t => t.Proiect.Id == idProiect);    
             ViewBag.Tasks = Tasks;
+            ViewBag.Id = idProiect;
+            _logger.LogInformation("something");
+            _logger.LogInformation("something");
+            _logger.LogInformation(idProiect.ToString());
+
             return View();
         }
 
         [Authorize(Roles = "membru,administrator,organizator")]
-        [Route("/tasks/show/{idTask}")]
-        public ActionResult Show([FromRoute] int idTask) 
+        [Route("/Tasks/Show/{idTask}")]
+        public ActionResult Show(int idTask) 
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
             ViewBag.Task = task;
@@ -46,8 +51,9 @@ namespace TaskHub.Controllers
         }
 
         [Authorize(Roles = "administrator,organizator")]
-        public IActionResult New() 
+        public IActionResult New(int idProiect) 
         {
+            ViewBag.Id = idProiect;
             return View();
         }
 
@@ -59,7 +65,7 @@ namespace TaskHub.Controllers
             {
                 db.Tasks.Add(t);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("", "Tasks", new { id = t.ProiectId });
             }
             catch (Exception) 
             {
@@ -99,7 +105,7 @@ namespace TaskHub.Controllers
                     task.DataFinalizare = model.DataFinalizare;
                     task.ContinutMedia = model.ContinutMedia;
                     db.SaveChanges();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("", "Tasks", new { id = task.ProiectId });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -116,9 +122,10 @@ namespace TaskHub.Controllers
         public ActionResult Delete(int idTask) 
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            int? idProiect = task.ProiectId;
             db.Tasks.Remove(task);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("", "Tasks", new { id = idProiect });
         }
     }
 }

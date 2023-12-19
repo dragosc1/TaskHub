@@ -44,7 +44,12 @@ namespace TaskHub.Database
                     .HasOne(t => t.Task)
                     .WithMany(c => c.Comentarii)
                     .HasForeignKey(c => c.IdTask);
-            
+
+            modelBuilder.Entity<TaskHub.Models.Task>()
+                .HasOne(t => t.Proiect)
+                .WithMany(p => p.Tasks)
+                .HasForeignKey(t => t.ProiectId);
+
         }
         
 
