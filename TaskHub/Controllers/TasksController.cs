@@ -15,16 +15,18 @@ namespace TaskHub.Controllers
         private readonly ILogger<ProiecteController> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-
+        private readonly IWebHostEnvironment _env;
         public TasksController(TaskHubDbcontext context,
             ILogger<ProiecteController> logger,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager,
+            IWebHostEnvironment env)
         {
             this.db = context;
             _logger = logger;
             _userManager = userManager;
             _roleManager = roleManager;
+            _env = env;
         }
 
         [Authorize(Roles = "membru,administrator,organizator")]
@@ -59,7 +61,7 @@ namespace TaskHub.Controllers
 
         [HttpPost]
         [Authorize(Roles = "administrator,organizator")]
-        public IActionResult New(Models.Task t) 
+        public async Task<IActionResult> New(Models.Task t) 
         {
             try
             {
@@ -78,42 +80,39 @@ namespace TaskHub.Controllers
         public IActionResult Edit(int idTask) 
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            ViewBag.Id = task.Id;
+            ViewBag.ProiectId = task.ProiectId;
             return View(task);
         }
 
 
         [HttpPost]
         [Authorize(Roles = "administrator,organizator")]
-        [Route("tasks/edit/{t}")]
+        [Route("/tasks/edit/{model}")]
         public ActionResult Edit(Models.Task model)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    var task = db.Tasks.Find(model.Id);
+                var task = db.Tasks.Find(model.Id);
 
-                    if (task == null)
-                    {
-                        return NotFound();
-                    }
-
-                    task.Titlu = model.Titlu;
-                    task.Descriere = model.Descriere;
-                    task.Status = model.Status;
-                    task.DataStart = model.DataStart;
-                    task.DataFinalizare = model.DataFinalizare;
-                    task.ContinutMedia = model.ContinutMedia;
-                    db.SaveChanges();
-                    return RedirectToAction("", "Tasks", new { id = task.ProiectId });
-                }
-                catch (DbUpdateConcurrencyException)
+                if (task == null)
                 {
-                    ModelState.AddModelError("", "Concurrency conflict occurred.");
-                    return View(model);
+                    return NotFound();
                 }
+
+                task.Titlu = model.Titlu;
+                task.Descriere = model.Descriere;
+                task.Status = model.Status;
+                task.DataStart = model.DataStart;
+                task.DataFinalizare = model.DataFinalizare;
+                db.SaveChanges();
+                return RedirectToAction("", "Tasks", new { id = task.ProiectId });
             }
-            return View(model);
+            catch (DbUpdateConcurrencyException)
+            {
+                ModelState.AddModelError("", "Concurrency conflict occurred.");
+                return View(model);
+            }
         }
 
         [HttpPost]

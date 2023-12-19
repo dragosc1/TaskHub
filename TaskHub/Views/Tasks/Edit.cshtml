@@ -2,12 +2,17 @@
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-
+@{
+    int? Id = ViewBag.Id;
+    int? ProiectId = ViewBag.ProiectId;
+}
 <h2> Formular editare task</h2>
 @using (Html.BeginForm(actionName: "Edit", controllerName: "Tasks"))
 {
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <hr />
+    @Html.Hidden("Id", Id)
+    @Html.Hidden("ProiectId", ProiectId)
 
     @Html.Label("Titlu", "Titlul Taskului")
     <br />
