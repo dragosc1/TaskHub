@@ -36,9 +36,6 @@ namespace TaskHub.Controllers
             var Tasks = db.Tasks.Where(t => t.Proiect.Id == idProiect);    
             ViewBag.Tasks = Tasks;
             ViewBag.Id = idProiect;
-            _logger.LogInformation("something");
-            _logger.LogInformation("something");
-            _logger.LogInformation(idProiect.ToString());
 
             return View();
         }
@@ -79,6 +76,7 @@ namespace TaskHub.Controllers
         [Authorize(Roles = "administrator,organizator")]
         public IActionResult Edit(int idTask) 
         {
+
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
             ViewBag.Id = task.Id;
             ViewBag.ProiectId = task.ProiectId;
@@ -89,30 +87,16 @@ namespace TaskHub.Controllers
         [HttpPost]
         [Authorize(Roles = "administrator,organizator")]
         [Route("/tasks/edit/{model}")]
-        public ActionResult Edit(Models.Task model)
+        public IActionResult Edit(Models.Task task)
         {
-            try
+            _logger.LogInformation("something");
+            if (ModelState.IsValid)
             {
-                var task = db.Tasks.Find(model.Id);
-
-                if (task == null)
-                {
-                    return NotFound();
-                }
-
-                task.Titlu = model.Titlu;
-                task.Descriere = model.Descriere;
-                task.Status = model.Status;
-                task.DataStart = model.DataStart;
-                task.DataFinalizare = model.DataFinalizare;
+                db.Update(task);
                 db.SaveChanges();
                 return RedirectToAction("", "Tasks", new { id = task.ProiectId });
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                ModelState.AddModelError("", "Concurrency conflict occurred.");
-                return View(model);
-            }
+            else return View();
         }
 
         [HttpPost]

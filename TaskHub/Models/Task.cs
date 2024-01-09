@@ -6,6 +6,7 @@ namespace TaskHub.Models
     {
         [Key]
         public int Id { get; set; }
+        public int? ProiectId { get; set; }
 
         [Required(ErrorMessage = "Titlul este obligatoriu")]
         [StringLength(100)]
@@ -25,9 +26,8 @@ namespace TaskHub.Models
         [DataType(DataType.DateTime)]
         public DateTime DataFinalizare { get; set; }
 
-        public string ContinutMedia { get; set; }
+        public string? ContinutMedia { get; set; }
 
-        public int? ProiectId { get; set; }
         public virtual Proiect? Proiect { get; set; }
 
         public virtual IEnumerable<Comentariu>? Comentarii { get; set;}

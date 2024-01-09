@@ -2,52 +2,46 @@
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
-@{
-    int? Id = ViewBag.Id;
-    int? ProiectId = ViewBag.ProiectId;
-}
 <h2> Formular editare task</h2>
-@using (Html.BeginForm(actionName: "Edit", controllerName: "Tasks"))
+@using (Html.BeginForm(actionName : "Edit", controllerName : "Tasks"))
 {
+
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.ProiectId)
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <hr />
-    @Html.Hidden("Id", Id)
-    @Html.Hidden("ProiectId", ProiectId)
 
-    @Html.Label("Titlu", "Titlul Taskului")
-    <br />
-    @Html.TextBox("Titlu", Model.Titlu, new { @class = "form-control"})
-    @Html.ValidationMessage("Titlu", null, new {@class = "text-danger"})
-    <br />
+    <div class="form-group">
+        @Html.LabelFor(model => model.Titlu, "Titlul Taskului")
+        @Html.TextBoxFor(model => model.Titlu, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Titlu, "", new { @class = "text-danger" })
+    </div>
     <br />
 
-    @Html.Label("Descriere", "Descrierea Taskului")
+    <div class="form-group">
+        @Html.LabelFor(model => model.Descriere, "Descrierea Taskului")
+        @Html.TextBoxFor(model => model.Descriere, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Descriere, "", new { @class = "text-danger" })
+    </div>
     <br />
-    @Html.TextArea("Descriere", Model.Descriere, new { @class = "form-control" })
-    @Html.ValidationMessage("Descriere", null, new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.Status, "Status Taskului")
+        @Html.TextBoxFor(model => model.Status, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+    </div>
     <br />
+    <div class="form-group">
+        @Html.LabelFor(model => model.DataStart, "Data inceput al Taskului")
+        @Html.EditorFor(model => model.DataStart, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DataStart, "", new { @class = "text-danger" })
+    </div>
     <br />
-
-    @Html.Label("Status", "Statusul Taskului")
-    <br />
-    @Html.TextBox("Status", Model.Status, new { @class = "form-control" })
-    @Html.ValidationMessage("Status", null, new { @class = "text-danger" })
-    <br />
-    <br />
-
-    @Html.Label("DataStart", "Statusul Taskului")
-    <br />
-    @Html.TextBox("DataStart", Model.DataStart, new { @class = "form-control", type = "date" })
-    @Html.ValidationMessage("DataStart", null, new { @class = "text-danger" })
-    <br />
-    <br />
-
-    @Html.Label("DataFinalizare", "Statusul Taskului")
-    <br />
-    @Html.TextBox("DataFinalizare", Model.DataFinalizare, new { @class = "form-control", type = "date" })
-    @Html.ValidationMessage("DataFinalizare", null, new { @class = "text-danger" })
+    <div class="form-group">
+        @Html.LabelFor(model => model.DataFinalizare, "Data finalizare al Taskului")
+        @Html.EditorFor(model => model.DataFinalizare, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.DataFinalizare, "", new { @class = "text-danger" })
+    </div>
     <br />
     <br />
-
     <button class="btn btn-success" type="submit">Modifica Taskul</button>
 }
