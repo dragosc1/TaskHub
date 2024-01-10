@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TaskHub.Database;
 
 namespace TaskHub.Models
 {
@@ -7,7 +8,7 @@ namespace TaskHub.Models
         [Key]
         public int Id { get; set; }
         public int? ProiectId { get; set; }
-
+        
         [Required(ErrorMessage = "Titlul este obligatoriu")]
         [StringLength(100)]
         public string Titlu { get; set; }
@@ -30,6 +31,7 @@ namespace TaskHub.Models
 
         public virtual Proiect? Proiect { get; set; }
 
-        public virtual IEnumerable<Comentariu>? Comentarii { get; set;}
+        public virtual IEnumerable<Comentariu>? Comentarii { get; set; }
+        public virtual IEnumerable<ApplicationUser>? Users { get; set; }
     }
 }

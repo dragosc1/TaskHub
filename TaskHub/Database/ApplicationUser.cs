@@ -15,5 +15,6 @@ namespace TaskHub.Database
 
         public virtual IEnumerable<Comentariu>? Comentarii { get; set; }
 
+        public virtual IEnumerable<Models.Task>? Tasks { get; set; }
     }
 }
