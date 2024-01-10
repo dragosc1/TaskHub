@@ -5,7 +5,7 @@
     int ProiectId = ViewBag.Id;
 }
 <h2> Formular adaugare task</h2>
-@using (Html.BeginForm(actionName: "New", controllerName:"Tasks"))
+@using (Html.BeginForm(actionName: "New", controllerName: "Tasks", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <hr/>
@@ -40,6 +40,8 @@
     <br />
     @Html.TextBox("DataFinalizare", null, new { @class = "form-control", type = "date" })
     @Html.ValidationMessage("DataFinalizare", null, new { @class = "text-danger" })
+    <br />
+    <input class="form-control" type="file" name="TaskContent">
     <br />
     <br />
 

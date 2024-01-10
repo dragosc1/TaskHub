@@ -16,6 +16,7 @@ namespace TaskHub.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _env;
+
         public TasksController(TaskHubDbcontext context,
             ILogger<ProiecteController> logger,
             UserManager<ApplicationUser> userManager,
@@ -58,10 +59,23 @@ namespace TaskHub.Controllers
 
         [HttpPost]
         [Authorize(Roles = "administrator,organizator")]
-        public async Task<IActionResult> New(Models.Task t) 
+        public async Task<IActionResult> New(Models.Task t, IFormFile TaskContent) 
         {
             try
             {
+                var storagePath = Path.Combine(
+                _env.WebRootPath,
+                "media",
+                TaskContent.FileName);
+
+                var databaseFileName = "/media/" + TaskContent.FileName;
+                using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                {
+                    await TaskContent.CopyToAsync(fileStream);
+                }
+
+                t.ContinutMedia = databaseFileName;
+
                 db.Tasks.Add(t);
                 db.SaveChanges();
                 return RedirectToAction("", "Tasks", new { id = t.ProiectId });
@@ -87,11 +101,22 @@ namespace TaskHub.Controllers
         [HttpPost]
         [Authorize(Roles = "administrator,organizator")]
         [Route("/tasks/edit/{model}")]
-        public IActionResult Edit(Models.Task task)
+        public async Task<IActionResult> Edit(Models.Task task, IFormFile TaskContent)
         {
-            _logger.LogInformation("something");
             if (ModelState.IsValid)
             {
+                var storagePath = Path.Combine(
+               _env.WebRootPath,
+               "media",
+               TaskContent.FileName);
+
+                var databaseFileName = "/media/" + TaskContent.FileName;
+                using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                {
+                    await TaskContent.CopyToAsync(fileStream);
+                }
+
+                task.ContinutMedia = databaseFileName;
                 db.Update(task);
                 db.SaveChanges();
                 return RedirectToAction("", "Tasks", new { id = task.ProiectId });

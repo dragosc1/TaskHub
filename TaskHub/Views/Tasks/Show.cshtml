@@ -12,9 +12,12 @@
 <p>Status: @ViewBag.Task.Status</p>
 <p>Data inceput: @ViewBag.Task.DataStart</p>
 <p>Data final: @ViewBag.Task.DataFinalizare</p>
+<a href="@ViewBag.Task.ContinutMedia" target="_blank">Afiseaza Continut Media</a>
 <br />
+
 <a href="@Url.Action("Edit", "Tasks", new { idProiect = ViewBag.Id })">Editare task</a>
 <br />
+
 <form method="post" action="/Tasks/Delete/@ViewBag.Task.Id">
     <button type="submit">Stergere Task</button>
 </form>

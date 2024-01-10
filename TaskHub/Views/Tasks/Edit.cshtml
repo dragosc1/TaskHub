@@ -3,7 +3,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 <h2> Formular editare task</h2>
-@using (Html.BeginForm(actionName : "Edit", controllerName : "Tasks"))
+@using (Html.BeginForm(actionName: "Edit", controllerName: "Tasks", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 
     @Html.HiddenFor(model => model.Id)
@@ -41,6 +41,8 @@
         @Html.EditorFor(model => model.DataFinalizare, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.DataFinalizare, "", new { @class = "text-danger" })
     </div>
+    <br />
+    <input class="form-control" type="file" name="TaskContent">
     <br />
     <br />
     <button class="btn btn-success" type="submit">Modifica Taskul</button>
