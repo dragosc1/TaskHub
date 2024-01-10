@@ -3,6 +3,7 @@
 *@
 @{
     int ProiectId = ViewBag.Id;
+    var statusOptions = ViewBag.AvailableStatusOptions as IEnumerable<SelectListItem>;
 }
 <h2> Formular adaugare task</h2>
 @using (Html.BeginForm(actionName: "New", controllerName: "Tasks", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -25,7 +26,7 @@
 
     @Html.Label("Status", "Statusul Taskului")
     <br />
-    @Html.TextBox("Status", null, new { @class = "form-control" })
+    @Html.DropDownList("Status", statusOptions, new { @class = "form-control" })
     @Html.ValidationMessage("Status", null, new { @class = "text-danger" })
     <br /><br />
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.Intrinsics.Arm;
 using System.Threading.Tasks;
@@ -54,6 +55,12 @@ namespace TaskHub.Controllers
         public IActionResult New(int idProiect) 
         {
             ViewBag.Id = idProiect;
+            ViewBag.AvailableStatusOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Started", Text = "Started" },
+                new SelectListItem { Value = "InProgress", Text = "In Progress" },
+                new SelectListItem { Value = "Completed", Text = "Completed" },
+            };
             return View();
         }
 
@@ -94,6 +101,12 @@ namespace TaskHub.Controllers
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
             ViewBag.Id = task.Id;
             ViewBag.ProiectId = task.ProiectId;
+            ViewBag.AvailableStatusOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Started", Text = "Started" },
+                new SelectListItem { Value = "InProgress", Text = "In Progress" },
+                new SelectListItem { Value = "Completed", Text = "Completed" },
+            };
             return View(task);
         }
 
