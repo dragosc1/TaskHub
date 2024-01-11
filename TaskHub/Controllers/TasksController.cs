@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Runtime.Intrinsics.Arm;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskHub.Database;
 using TaskHub.Models;
@@ -39,6 +41,16 @@ namespace TaskHub.Controllers
             ViewBag.Tasks = Tasks;
             ViewBag.Id = idProiect;
 
+            return View();
+        }
+        [Route("/Task/IndexUser")]
+        public async Task<IActionResult> IndexUser()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var user_id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (db.Tasks.Include("Users").Where(t => t.Users.Any(u => u == user)).Count() > 0)
+                ViewBag.Tasks = db.Tasks.Include("Users").Where(t => t.Users.Any(u => u == user));
+            else ViewBag.Tasks = null;
             return View();
         }
 
@@ -170,8 +182,10 @@ namespace TaskHub.Controllers
                 }
                 var email = (await _userManager.FindByIdAsync(echipa.IdUtilizator)).Email;
                 ViewBag.AvailableUserOptions.Add(new SelectListItem { Value = email, Text = email });
-            } 
-            return View();
+            }
+            if (ViewBag.AvailableUserOptions.Count > 0)
+                return View();
+            else return View("ErrorAddMember");
         }
         [HttpPost]
         [Route("/tasks/addmember/{id?}/{e?}")]
