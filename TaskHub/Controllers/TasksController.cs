@@ -126,7 +126,6 @@ namespace TaskHub.Controllers
             return View(task);
         }
 
-
         [HttpPost]
         [Authorize(Roles = "administrator,organizator")]
         [Route("/tasks/edit/{model}")]
@@ -151,6 +150,33 @@ namespace TaskHub.Controllers
                 return RedirectToAction("", "Tasks", new { id = task.ProiectId });
             }
             else return View();
+        }
+
+        [Route("/tasks/editstatus/{idTask}")]
+        [Authorize(Roles = "member,administrator,organizator")]
+        public IActionResult EditStatus(int idTask)
+        {
+            var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            ViewBag.IdTask = task.Id;
+            ViewBag.AvailableStatusOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "Started", Text = "Started" },
+                new SelectListItem { Value = "InProgress", Text = "In Progress" },
+                new SelectListItem { Value = "Completed", Text = "Completed" },
+            };
+            return View();
+        }
+
+        [HttpPost]
+        [Route("/tasks/editstatus/{idTask}")]
+        [Authorize(Roles = "member,administrator,organizator")]
+        public IActionResult EditStatus(int idTask, string status)
+        {
+            var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            task.Status = status;
+            db.Update(task);
+            db.SaveChanges();
+            return RedirectToAction("Show", new { idTask = idTask });   
         }
 
         [HttpPost]

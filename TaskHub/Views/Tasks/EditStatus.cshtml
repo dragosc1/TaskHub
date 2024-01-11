@@ -1,0 +1,28 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+@{
+    int idTask = ViewBag.IdTask;
+}
+
+
+<h2>Formular editare Status task</h2>
+@using (Html.BeginForm(actionName: "EditStatus", controllerName: "Tasks", HttpMethod.Post))
+{
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <hr />
+
+    @Html.Hidden("idTask", idTask)
+    ;
+
+    @Html.Label("status", "Schimba statusul")
+    @Html.DropDownList("status", ViewBag.AvailableStatusOptions as IEnumerable<SelectListItem>)
+    @Html.ValidationMessage("status", null, new { @class = "text-danger"})
+    <br />
+
+    <button class="btn btn-success" type="submit">Schimba Status</button>
+}
