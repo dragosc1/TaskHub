@@ -44,9 +44,14 @@ namespace TaskHub.Controllers
 
         [Authorize(Roles = "membru,administrator,organizator")]
         [Route("/Tasks/Show/{idTask}")]
-        public ActionResult Show(int idTask) 
+        public ActionResult Show(int idTask)
         {
-            var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            var task = db.Tasks.Include("Users").FirstOrDefault(t => t.Id == idTask);
+            var users = task.Users;
+            if (users != null && users.Count() != 0)
+            {
+                ViewBag.Membrii = users.Select(u => u.Email).ToList();
+            }
             ViewBag.Task = task;
             return View(); 
         }
@@ -97,7 +102,6 @@ namespace TaskHub.Controllers
         [Authorize(Roles = "administrator,organizator")]
         public IActionResult Edit(int idTask) 
         {
-
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
             ViewBag.Id = task.Id;
             ViewBag.ProiectId = task.ProiectId;
@@ -147,6 +151,74 @@ namespace TaskHub.Controllers
             db.Tasks.Remove(task);
             db.SaveChanges();
             return RedirectToAction("", "Tasks", new { id = idProiect });
+        }
+
+        [HttpGet]
+        [Route("/tasks/addmember/{idTask}")]
+        [Authorize(Roles = "administrator,organizator")]
+        public async Task<IActionResult> AddMember(int idTask)
+        {
+            ViewBag.IdTask = idTask;
+            var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            int? projectId = task.ProiectId;
+            ViewBag.AvailableUserOptions = new List<SelectListItem>();
+            foreach (var echipa in db.Echipe.Where(e => e.IdProiect == projectId).ToList())
+            {
+                if (db.Tasks.Where(t => t.ProiectId == projectId).FirstOrDefault(t => t.Users.Any(u => u.Id == echipa.IdUtilizator)) != null)
+                {
+                    continue;
+                }
+                var email = (await _userManager.FindByIdAsync(echipa.IdUtilizator)).Email;
+                ViewBag.AvailableUserOptions.Add(new SelectListItem { Value = email, Text = email });
+            } 
+            return View();
+        }
+        [HttpPost]
+        [Route("/tasks/addmember/{id?}/{e?}")]
+        public async Task<IActionResult> AddMember(int idTask, string? email)
+        {
+            _logger.LogInformation(idTask.ToString());
+            _logger.LogInformation("something");
+            var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            var user = (await _userManager.FindByEmailAsync(email));
+            if (user != null)
+            {
+                if (task.Users == null)
+                {
+                    IEnumerable<ApplicationUser> users = new List<ApplicationUser> { user };
+                    task.Users = users;
+                }
+                else task.Users.Append(user);
+                db.Tasks.Update(task);
+                await db.SaveChangesAsync();
+            }
+            return RedirectToAction("Show", new { idTask = idTask });
+        }
+
+        [HttpPost]
+        [Route("Tasks/DeleteMember/{nume?}/{idTask}")]
+        [Authorize(Roles = "organizator")]
+        public async Task<IActionResult> DeleteMember(string? nume, int idTask)
+        {
+            var user = await _userManager.FindByEmailAsync(nume);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var task = await db.Tasks
+            .Include(t => t.Users) 
+            .FirstOrDefaultAsync(t => t.Id == idTask);
+
+            task.Users = task.Users.Where(u => u != user).ToList();
+
+            db.Tasks.Update(task);  
+
+            await db.SaveChangesAsync();
+
+            // Redirect to the Index action after successful deletion
+            return RedirectToAction("Show", new { idTask = idTask });
         }
     }
 }

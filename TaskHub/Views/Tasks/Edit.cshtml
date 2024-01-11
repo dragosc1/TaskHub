@@ -1,13 +1,11 @@
 ﻿@model TaskHub.Models.Task
-@{
-    var statusOptions = ViewBag.AvailableStatusOptions as IEnumerable<SelectListItem>;
-}
 <h2> Formular editare task</h2>
 @using (Html.BeginForm(actionName: "Edit", controllerName: "Tasks", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 
     @Html.HiddenFor(model => model.Id)
     @Html.HiddenFor(model => model.ProiectId)
+    @Html.HiddenFor(model => model.Status);
     @Html.ValidationSummary(false, "", new { @class = "text-danger" })
     <hr />
 
@@ -22,12 +20,6 @@
         @Html.LabelFor(model => model.Descriere, "Descrierea Taskului")
         @Html.TextBoxFor(model => model.Descriere, new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.Descriere, "", new { @class = "text-danger" })
-    </div>
-    <br />
-    <div class="form-group">
-        @Html.LabelFor(model => model.Status, "Statusul taskului")
-        @Html.DropDownListFor(model => model.Status, statusOptions, new { @class = "form-control" })
-        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
     </div>
     <br />
     <div class="form-group">

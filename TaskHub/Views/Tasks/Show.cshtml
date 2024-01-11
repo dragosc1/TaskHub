@@ -4,7 +4,7 @@
 @{
 }
 
-<h2>Show Task</h2>
+<h2>Afisare Task</h2>
 <br />
 <p>@ViewBag.Task.Titlu</p>
 <br />
@@ -17,8 +17,23 @@
 
 <a href="@Url.Action("Edit", "Tasks", new { idProiect = ViewBag.Id })">Editare task</a>
 <br />
-
 <form method="post" action="/Tasks/Delete/@ViewBag.Task.Id">
     <button type="submit">Stergere Task</button>
 </form>
 <hr />
+<h2>Membrii:</h2>
+<ul>
+    @if (ViewBag.Membrii != null)
+        @foreach (var membru in ViewBag.Membrii)
+        {
+            <li style="list-style: none">@membru</li>
+            <form method="post" action="/Tasks/DeleteMember/@membru/@ViewBag.Task.Id">
+                <button type="submit">Sterge membru</button>
+            </form>
+        }
+    else {
+        <p>nu s-au gasit membrii!</p>
+    }
+</ul>
+<h3>Adauga membrii la task</h3>
+<a href="/Tasks/AddMember/@ViewBag.Task.Id">Adauga membru la task</a>
