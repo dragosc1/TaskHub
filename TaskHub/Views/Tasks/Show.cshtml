@@ -15,7 +15,7 @@
 <a href="@ViewBag.Task.ContinutMedia" target="_blank">Afiseaza Continut Media</a>
 <br />
 
-<a href="@Url.Action("Edit", "Tasks", new { idProiect = ViewBag.Id })">Editare task</a>
+<a href="@Url.Action("Edit", "Tasks", new { idTask = ViewBag.Id })">Editare task</a>
 <br />
 <form method="post" action="/Tasks/Delete/@ViewBag.Task.Id">
     <button type="submit">Stergere Task</button>
@@ -35,5 +35,23 @@
         <p>nu s-au gasit membrii!</p>
     }
 </ul>
-<h3>Adauga membrii la task</h3>
+<h4>Adauga membrii la task</h4>
 <a href="/Tasks/AddMember/@ViewBag.Task.Id">Adauga membru la task</a>
+<hr />
+<h2>Comentarii</h2>
+<ul>
+    @if (ViewBag.Comentarii != null)
+        @foreach (string comentariu in ViewBag.Comentarii)
+        {
+            <li style="list-style: none">@comentariu</li>
+            <form method="post" action=@Url.Action("DeleteComentariu", "Tasks", new { content = comentariu, idTask = ViewBag.Task.Id })>
+                <button type="submit">Sterge comentariu</button>
+            </form>
+        }
+    else
+    {
+        <p>nu s-au gasit comentarii!</p>
+    }
+</ul>
+<h4>Adauga comentarii la task</h3>
+<a href="@Url.Action("AddComentariu", "Tasks", new { idTask = ViewBag.Task.Id })">Adauga comentariu la task</a>

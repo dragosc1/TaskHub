@@ -58,13 +58,21 @@ namespace TaskHub.Controllers
         [Route("/Tasks/Show/{idTask}")]
         public ActionResult Show(int idTask)
         {
-            var task = db.Tasks.Include("Users").FirstOrDefault(t => t.Id == idTask);
+            var task = db.Tasks.Include("Users").Include("Comentarii").FirstOrDefault(t => t.Id == idTask);
             var users = task.Users;
             if (users != null && users.Count() != 0)
             {
                 ViewBag.Membrii = users.Select(u => u.Email).ToList();
             }
+            else ViewBag.Membrii = null;    
+            var comentarii = task.Comentarii;
+            if (comentarii != null && comentarii.Count() != 0)
+            {
+                ViewBag.Comentarii = comentarii.Select(c => c.Continut).ToList();
+            }
+            else ViewBag.Comentarii = null; 
             ViewBag.Task = task;
+            ViewBag.Id = idTask;
             return View(); 
         }
 
@@ -115,14 +123,8 @@ namespace TaskHub.Controllers
         public IActionResult Edit(int idTask) 
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
-            ViewBag.Id = task.Id;
+            ViewBag.Id = idTask;
             ViewBag.ProiectId = task.ProiectId;
-            ViewBag.AvailableStatusOptions = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "Started", Text = "Started" },
-                new SelectListItem { Value = "InProgress", Text = "In Progress" },
-                new SelectListItem { Value = "Completed", Text = "Completed" },
-            };
             return View(task);
         }
 
@@ -258,6 +260,40 @@ namespace TaskHub.Controllers
             await db.SaveChangesAsync();
 
             // Redirect to the Index action after successful deletion
+            return RedirectToAction("Show", new { idTask = idTask });
+        }
+
+        [HttpGet]
+        [Route("Tasks/AddComentariu/{id?}")]
+        public IActionResult AddComentariu(int? idTask)
+        {
+            _logger.LogInformation(idTask.ToString());
+            ViewBag.IdTask = idTask;
+            return View();
+        }
+
+        [HttpPost]
+        [Route("Tasks/AddComentariu/{id?}/{c?}")]
+        public async Task<IActionResult> AddComentariu(int? idTask, string? content)
+        {
+            var user = _userManager.GetUserId(User);
+            Comentariu comentariu = new Comentariu
+            {
+                Continut = content,
+                IdTask = (int)idTask,
+                IdUtilizator = user
+            };
+            db.Comentarii.Add(comentariu);
+            db.SaveChanges();
+            return RedirectToAction("Show", new { idTask = idTask });
+        }
+        [HttpPost]
+        [Route("Tasks/DeleteComentariu/{c?}/{id?}")]
+        public async Task<IActionResult> DeleteComentariu(string? content, int? idTask)
+        {
+            var comentariu = db.Comentarii.FirstOrDefault(c => c.IdTask == idTask && c.Continut == content);
+            db.Remove(comentariu);
+            db.SaveChanges();
             return RedirectToAction("Show", new { idTask = idTask });
         }
     }

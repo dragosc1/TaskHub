@@ -16,6 +16,7 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.R
     .AddEntityFrameworkStores<TaskHubDbcontext>()
     .AddDefaultTokenProviders();
 
+
 builder.Services.AddRazorPages();
 
 var app = builder.Build();
