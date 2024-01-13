@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TaskHub.Database;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 

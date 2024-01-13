@@ -1,5 +1,13 @@
+
 html {
-  font-size: 14px;
+    font-size: 14px;
+}
+
+.textfirst {
+    margin-top: 50px;
+    font-size: 1.5vh;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 @media (min-width: 768px) {
@@ -11,6 +19,12 @@ html {
 html {
   position: relative;
   min-height: 100%;
+}
+
+.navigation {
+    background-color: #00ABE4;
+    color: white;
+    font-size: 1.5vh;
 }
 
 body {

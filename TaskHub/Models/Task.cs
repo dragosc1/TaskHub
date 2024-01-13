@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using TaskHub.Database;
 
 namespace TaskHub.Models
@@ -26,7 +27,7 @@ namespace TaskHub.Models
         [Required(ErrorMessage = "Data de finalizare este obligatorie")]
         [DataType(DataType.DateTime)]
         public DateTime DataFinalizare { get; set; }
-        
+
         public string? ContinutMedia { get; set; }
 
         public virtual Proiect? Proiect { get; set; }

@@ -3,24 +3,31 @@
 *@
 @{
 }
-<h2>Lista Taskuri User</h2>
+<div class="d-flex justify-content-center">
+    <h2>Lista Taskuri User</h2>
+</div>
 <br />
-@if (ViewBag.Tasks != null) {
+
+@if (ViewBag.Tasks != null)
+{
     @foreach (var task in ViewBag.Tasks)
     {
-        <p>@task.Titlu</p>
+        <div style="background-color:#CDCFD0; margin-bottom:1vh; margin-top:1vh; border:0.5vh solid rgb(56, 56, 56); border-radius: 2vh; padding: 5px">
+            <p style="font-size: 3vh">@task.Titlu</p>
+            <br />
+            <p style="font-size: 2vh">Descriere: @task.Descriere</p>
+            <p style="font-size: 2vh">Status: @task.Status</p>
+            <p style="font-size: 2vh">Data inceput: @task.DataStart</p>
+            <p style="font-size: 2vh">Data final: @task.DataFinalizare</p>
+            <br />
+            <div class="d-flex justify-content-between p-2">
+                <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a href="/Tasks/Show/@task.Id" class="text-white" style="text-decoration:none; font-size: 2vh">Afisare task </a></button>
+                <br />
+                <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a href="/Tasks/Edit/@task.Id" class="text-white" style="text-decoration:none; font-size: 2vh">Editare task</a></button>
+            </div>
+        </div>
         <br />
-        <p>Descriere: @task.Descriere</p>
-        <p>Status: @task.Status</p>
-        <a href="/Tasks/EditStatus/@task.Id">Editare status</a>
         <br />
-        <p>Data inceput: @task.DataStart</p>
-        <p>Data final: @task.DataFinalizare</p>
-        <br />
-        <a href="/Tasks/Show/@task.Id">Afisare task </a>
-        <br />
-        <a href="/Tasks/Edit/@task.Id">Editare task</a>
-        <hr />
     }
 }
 else

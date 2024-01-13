@@ -10,7 +10,7 @@
     @foreach (var echipa in ViewBag.Echipe)
     {
         Echipa e = echipa as Echipa;
-        <div class="card">
+        <div class="card" style="background-color: #CDCFD0">
             <div class="card-body">
                 <p>Echipa: @e.Proiect.NumeProiect</p>
                 <a href="Echipe/Show/@e.IdProiect">Afiseaza echipa</a>

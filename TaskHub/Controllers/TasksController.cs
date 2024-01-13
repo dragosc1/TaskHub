@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Runtime.Intrinsics.Arm;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -44,6 +45,7 @@ namespace TaskHub.Controllers
             return View();
         }
         [Route("/Task/IndexUser")]
+        [Authorize(Roles = "membru,administrator,organizator")]
         public async Task<IActionResult> IndexUser()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -91,22 +93,25 @@ namespace TaskHub.Controllers
 
         [HttpPost]
         [Authorize(Roles = "administrator,organizator")]
-        public async Task<IActionResult> New(Models.Task t, IFormFile TaskContent) 
+        public async Task<IActionResult> New(Models.Task t, IFormFile? TaskContent) 
         {
             try
             {
-                var storagePath = Path.Combine(
-                _env.WebRootPath,
-                "media",
-                TaskContent.FileName);
-
-                var databaseFileName = "/media/" + TaskContent.FileName;
-                using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                if (TaskContent != null)
                 {
-                    await TaskContent.CopyToAsync(fileStream);
-                }
+                    var storagePath = Path.Combine(
+                    _env.WebRootPath,
+                    "media",
+                    TaskContent.FileName);
 
-                t.ContinutMedia = databaseFileName;
+                    var databaseFileName = "/media/" + TaskContent.FileName;
+                    using (var fileStream = new FileStream(storagePath, FileMode.Create))
+                    {
+                        await TaskContent.CopyToAsync(fileStream);
+                    }
+
+                    t.ContinutMedia = databaseFileName;
+                }
 
                 db.Tasks.Add(t);
                 db.SaveChanges();
@@ -159,6 +164,11 @@ namespace TaskHub.Controllers
         public IActionResult EditStatus(int idTask)
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            var user = _userManager.GetUserId(User);
+            if (task.Users.Any(u => u.Id == user) == false)
+            {
+                return Unauthorized();
+            }
             ViewBag.IdTask = task.Id;
             ViewBag.AvailableStatusOptions = new List<SelectListItem>
             {
@@ -199,12 +209,12 @@ namespace TaskHub.Controllers
         public async Task<IActionResult> AddMember(int idTask)
         {
             ViewBag.IdTask = idTask;
-            var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
+            var task = db.Tasks.Include("Users").FirstOrDefault(t => t.Id == idTask);
             int? projectId = task.ProiectId;
             ViewBag.AvailableUserOptions = new List<SelectListItem>();
             foreach (var echipa in db.Echipe.Where(e => e.IdProiect == projectId).ToList())
             {
-                if (db.Tasks.Where(t => t.ProiectId == projectId).FirstOrDefault(t => t.Users.Any(u => u.Id == echipa.IdUtilizator)) != null)
+                if (task.Users.Any(u => u.Id == echipa.IdUtilizator) == true)
                 {
                     continue;
                 }
@@ -217,6 +227,7 @@ namespace TaskHub.Controllers
         }
         [HttpPost]
         [Route("/tasks/addmember/{id?}/{e?}")]
+        [Authorize(Roles = "organizator,administrator")]
         public async Task<IActionResult> AddMember(int idTask, string? email)
         {
             _logger.LogInformation(idTask.ToString());
@@ -239,7 +250,7 @@ namespace TaskHub.Controllers
 
         [HttpPost]
         [Route("Tasks/DeleteMember/{nume?}/{idTask}")]
-        [Authorize(Roles = "organizator")]
+        [Authorize(Roles = "organizator,administrator")]
         public async Task<IActionResult> DeleteMember(string? nume, int idTask)
         {
             var user = await _userManager.FindByEmailAsync(nume);
@@ -265,8 +276,15 @@ namespace TaskHub.Controllers
 
         [HttpGet]
         [Route("Tasks/AddComentariu/{id?}")]
-        public IActionResult AddComentariu(int? idTask)
+        [Authorize(Roles = "membru,administrator")]
+        public ActionResult AddComentariu(int? idTask)
         {
+            var user = _userManager.GetUserId(User);
+            var task = db.Tasks.Include("Users").FirstOrDefault(t => t.Id == idTask);
+            if (task.Users.Any(u => u.Id == user) == false)
+            {
+                return Unauthorized();
+            }
             _logger.LogInformation(idTask.ToString());
             ViewBag.IdTask = idTask;
             return View();
@@ -274,6 +292,7 @@ namespace TaskHub.Controllers
 
         [HttpPost]
         [Route("Tasks/AddComentariu/{id?}/{c?}")]
+        [Authorize(Roles = "membru,administrator")]
         public async Task<IActionResult> AddComentariu(int? idTask, string? content)
         {
             var user = _userManager.GetUserId(User);
@@ -289,9 +308,15 @@ namespace TaskHub.Controllers
         }
         [HttpPost]
         [Route("Tasks/DeleteComentariu/{c?}/{id?}")]
+        [Authorize(Roles = "membru,administrator")]
         public async Task<IActionResult> DeleteComentariu(string? content, int? idTask)
         {
             var comentariu = db.Comentarii.FirstOrDefault(c => c.IdTask == idTask && c.Continut == content);
+            var user = _userManager.GetUserId(User);
+            if (comentariu.IdUtilizator != user)
+            {
+                return Unauthorized();
+            }
             db.Remove(comentariu);
             db.SaveChanges();
             return RedirectToAction("Show", new { idTask = idTask });

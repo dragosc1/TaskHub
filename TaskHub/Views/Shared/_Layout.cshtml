@@ -8,31 +8,31 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/TaskHub.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body style="background-color: #B1A6A4;">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">TaskHub</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3" style="background-color:#697184;">
+            <div class="container-fluid" >
+                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">TaskHub</a>
+                <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Acasă</a>
+                            <a class="nav-link text-dark text-white" asp-area="" asp-controller="Home" asp-action="Index">Acasă</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Confidențialitate</a>
+                            <a class="nav-link text-dark text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Confidențialitate</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Proiecte" asp-action="Index">Proiecte</a>
+                            <a class="nav-link text-dark text-white" asp-area="" asp-controller="Proiecte" asp-action="Index">Proiecte</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Echipe" asp-action="Index">Echipe</a>
+                            <a class="nav-link text-dark text-white" asp-area="" asp-controller="Echipe" asp-action="Index">Echipe</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Tasks" asp-action="IndexUser">Tasks</a>
+                            <a class="nav-link text-dark text-white w" asp-area="" asp-controller="Tasks" asp-action="IndexUser">Tasks</a>
                         </li>
                     </ul>
                     @Html.Partial("_LoginPartial")
@@ -48,7 +48,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2023 - TaskHub - <a asp-area="" asp-controller="Home" asp-action="Privacy">Confidențialitate</a>
+            &copy; 2023 - TaskHub - <a asp-area="" asp-controller="Home" asp-action="Privacy" style="color:black">Confidențialitate</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
