@@ -4,56 +4,74 @@
 @{
     ViewBag.Title = "Show";
 }
-
-<h2>Afisare Task</h2>
-<br />
-<p>@ViewBag.Task.Titlu</p>
-<br />
-<p>Descriere: @ViewBag.Task.Descriere</p>
-<p>Status: @ViewBag.Task.Status</p> <a href="/Tasks/EditStatus/@ViewBag.Task.Id">Schimba statusul</a>
-<p>Data inceput: @ViewBag.Task.DataStart</p>
-<p>Data final: @ViewBag.Task.DataFinalizare</p>
-<a href="@ViewBag.Task.ContinutMedia" target="_blank">Afiseaza Continut Media</a>
-<br />
-
-<a href="@Url.Action("Edit", "Tasks", new { idTask = ViewBag.Id })">Editare task</a>
-<br />
-<form method="post" action="/Tasks/Delete/@ViewBag.Task.Id">
-    <button type="submit">Stergere Task</button>
-</form>
-<hr />
-<h2>Membrii:</h2>
-<ul>
-    @if (ViewBag.Membrii != null)
-        @foreach (var membru in ViewBag.Membrii)
-        {
-            <li style="list-style: none">@membru</li>
-            <form method="post" action="/Tasks/DeleteMember/@membru/@ViewBag.Task.Id">
-                <button type="submit">Sterge membru</button>
-            </form>
+<div style="background-color:#CDCFD0; margin-bottom:1vh; margin-top:1vh; border:0.5vh solid rgb(56, 56, 56); border-radius: 2vh; padding: 10px; padding-left:20px; padding-right:20px">
+    <h3>Titlu:</h3>
+    <p style="font-size: 20px">@ViewBag.Task.Titlu</p>
+    <p style="font-size: 17.5px">Descriere: @ViewBag.Task.Descriere</p>
+    <p style="font-size: 17.5px">Status: @ViewBag.Task.Status</p>
+    <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a href="/Tasks/EditStatus/@ViewBag.Task.Id" style="color:white; text-decoration:none">Schimba statusul</a></button>
+    <br />
+    <br />
+    <p style="font-size: 17.5px">Data inceput: @ViewBag.Task.DataStart</p>
+    <p style="font-size: 17.5px">Data final: @ViewBag.Task.DataFinalizare</p>
+    <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184">
+        <a href="@ViewBag.Task.ContinutMedia" target="_blank" style="color:white; text-decoration:none">Afiseaza Continut Media</a>
+    </button>
+    <br />
+    <br />
+    <br />
+    <div class="d-flex justify-content-between">
+        <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184">
+        <a href="@Url.Action("Edit", "Tasks", new { idTask = ViewBag.Id })" style="color:white;text-decoration:none">Editare task</a>
+        </button>
+        <form method="post" action="/Tasks/Delete/@ViewBag.Task.Id">
+            <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184; color:white" type="submit">Stergere Task</button>
+        </form>
+    </div>
+    <hr />
+    <h2>Membrii:</h2>
+    <ul>
+        @if (ViewBag.Membrii != null)
+            @foreach (var membru in ViewBag.Membrii)
+            {
+                <li style="list-style: none"><p style="font-size:17.5px; margin-bottom:0px">@membru</p></li>
+                <form method="post" action="/Tasks/DeleteMember/@membru/@ViewBag.Task.Id">
+                    <button style="color:white;padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184" type="submit">Sterge membru</button>
+                </form>
+                <br />
+            }
+        else {
+            <p>nu s-au gasit membrii!</p>
         }
-    else {
-        <p>nu s-au gasit membrii!</p>
-    }
-</ul>
-<h4>Adauga membrii la task</h4>
-<a href="/Tasks/AddMember/@ViewBag.Task.Id">Adauga membru la task</a>
-<hr />
-<h2>Comentarii</h2>
-<ul>
-    @if (ViewBag.Comentarii != null)
-        @foreach (var comentariu in ViewBag.Comentarii)
+    </ul>
+    <h4>Adauga membrii la task</h4>
+    <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184">
+        <a href="/Tasks/AddMember/@ViewBag.Task.Id" style="color:white; text-decoration:none">Adauga membru la task</a>
+    </button>
+    <hr />
+    <h2>Comentarii</h2>
+    <ul>
+        @if (ViewBag.Comentarii != null)
+            @foreach (var comentariu in ViewBag.Comentarii)
+            {
+                <li style="list-style: none"><p style="font-size:17.5px">@comentariu.Continut</p></li>
+                <div class="d-flex gap-4">
+                    <form method="post" action=@Url.Action("DeleteComentariu", "Tasks", new { content = comentariu.Continut, idTask = ViewBag.Task.Id })>
+                        <button style="color:white;padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184" type="submit">Sterge comentariu</button>
+                    </form>
+                    <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184">
+                        <a style="color:white; text-decoration:none" href="@Url.Action("EditComentariu", "Tasks", new { idTask = ViewBag.Task.Id, idComentariu = comentariu.Id})">Editeaza comentariu</a>
+                    </button>
+                </div>
+                <br />
+            }
+        else
         {
-            <li style="list-style: none">@comentariu.Continut</li>
-            <form method="post" action=@Url.Action("DeleteComentariu", "Tasks", new { content = comentariu.Continut, idTask = ViewBag.Task.Id })>
-                <button type="submit">Sterge comentariu</button>
-            </form>
-            <a href="@Url.Action("EditComentariu", "Tasks", new { idTask = ViewBag.Task.Id, idComentariu = comentariu.Id})">Editeaza comentariu</a>
+            <p>nu s-au gasit comentarii!</p>
         }
-    else
-    {
-        <p>nu s-au gasit comentarii!</p>
-    }
-</ul>
-<h4>Adauga comentarii la task</h3>
-<a href="@Url.Action("AddComentariu", "Tasks", new { idTask = ViewBag.Task.Id })">Adauga comentariu la task</a>
+    </ul>
+    <h4>Adauga comentarii la task</h3>
+    <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184">
+        <a href="@Url.Action("AddComentariu", "Tasks", new { idTask = ViewBag.Task.Id })" style="color:white; text-decoration:none">Adauga comentariu la task</a>
+    </button>
+</div>

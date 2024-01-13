@@ -56,7 +56,7 @@ namespace TaskHub.Controllers
         [Authorize(Roles = "membru,administrator,organizator")]
         public async Task<IActionResult> New(Proiect p)
         {
-            try
+            if (ModelState.IsValid)
             {
                 db.Proiecte.Add(p);
                 db.SaveChanges();
@@ -88,7 +88,7 @@ namespace TaskHub.Controllers
 
                 return RedirectToAction("Index");
             }
-            catch (Exception) 
+            else 
             {
                 return View(); 
             }

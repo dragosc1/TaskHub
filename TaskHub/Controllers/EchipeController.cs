@@ -128,10 +128,14 @@ namespace TaskHub.Controllers
         [Authorize(Roles = "organizator")]
         public async Task<IActionResult> New(int idProiect, string? email)
         {
-            Echipa echipa = new Echipa { IdProiect = idProiect, IdUtilizator = (await _userManager.FindByEmailAsync(email)).Id };
-            _db.Echipe.Add(echipa);
-            _db.SaveChanges();
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                Echipa echipa = new Echipa { IdProiect = idProiect, IdUtilizator = (await _userManager.FindByEmailAsync(email)).Id };
+                _db.Echipe.Add(echipa);
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            else return View();
         }
     }
 }
