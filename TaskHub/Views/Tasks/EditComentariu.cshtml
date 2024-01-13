@@ -1,0 +1,20 @@
+﻿@{
+}
+@model TaskHub.Models.Comentariu
+
+
+<h2>Formular adaugare Comentariu task</h2>
+@using (Html.BeginForm(actionName: "EditComentariu", controllerName: "Tasks", HttpMethod.Post))
+{
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+    <hr />
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.IdUtilizator)
+    @Html.HiddenFor(model => model.IdTask)
+    @Html.LabelFor(model => model.Continut)
+    @Html.TextBoxFor(model => model.Continut)
+    @Html.ValidationMessageFor(model => model.Continut, null, new { @class = "text-danger" })
+    <br />
+
+    <button class="btn btn-success" type="submit">Adauga Comentariu</button>
+}

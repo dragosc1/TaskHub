@@ -70,7 +70,7 @@ namespace TaskHub.Controllers
             var comentarii = task.Comentarii;
             if (comentarii != null && comentarii.Count() != 0)
             {
-                ViewBag.Comentarii = comentarii.Select(c => c.Continut).ToList();
+                ViewBag.Comentarii = comentarii.ToList();
             }
             else ViewBag.Comentarii = null; 
             ViewBag.Task = task;
@@ -288,6 +288,33 @@ namespace TaskHub.Controllers
             _logger.LogInformation(idTask.ToString());
             ViewBag.IdTask = idTask;
             return View();
+        }
+
+        [HttpGet]
+        [Route("Tasks/EditComentariu/{id?}/{idc?}")]
+        [Authorize(Roles = "membru,administrator")]
+        public ActionResult EditComentariu(int? idTask, int? idComentariu)
+        {
+            var user = _userManager.GetUserId(User);
+            var task = db.Tasks.Include("Users").FirstOrDefault(t => t.Id == idTask);
+            if (task.Users.Any(u => u.Id == user) == false)
+            {
+                return Unauthorized();
+            }
+            _logger.LogInformation(idTask.ToString());
+            var comentariu = db.Comentarii.FirstOrDefault(c => c.Id == idComentariu);   
+            ViewBag.IdTask = idTask;
+            return View(comentariu);
+        }
+
+        [HttpPost]
+        [Route("Tasks/EditComentariu/{id?}/{c?}")]
+        [Authorize(Roles = "membru,administrator")]
+        public async Task<IActionResult> EditComentariu(int? idTask, Comentariu comentariu)
+        {
+            db.Comentarii.Update(comentariu);
+            db.SaveChanges();
+            return RedirectToAction("Show", new { idTask = idTask });
         }
 
         [HttpPost]

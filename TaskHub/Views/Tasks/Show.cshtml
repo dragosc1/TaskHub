@@ -41,12 +41,13 @@
 <h2>Comentarii</h2>
 <ul>
     @if (ViewBag.Comentarii != null)
-        @foreach (string comentariu in ViewBag.Comentarii)
+        @foreach (var comentariu in ViewBag.Comentarii)
         {
-            <li style="list-style: none">@comentariu</li>
-            <form method="post" action=@Url.Action("DeleteComentariu", "Tasks", new { content = comentariu, idTask = ViewBag.Task.Id })>
+            <li style="list-style: none">@comentariu.Continut</li>
+            <form method="post" action=@Url.Action("DeleteComentariu", "Tasks", new { content = comentariu.Continut, idTask = ViewBag.Task.Id })>
                 <button type="submit">Sterge comentariu</button>
             </form>
+            <a href="@Url.Action("EditComentariu", "Tasks", new { idTask = ViewBag.Task.Id, idComentariu = comentariu.Id})">Editeaza comentariu</a>
         }
     else
     {
