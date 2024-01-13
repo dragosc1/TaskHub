@@ -26,6 +26,17 @@ namespace TaskHub.Controllers
         [Authorize(Roles = "organizator,administrator,membru")]
         public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User);
+            var administratori = await _userManager.GetUsersInRoleAsync("administrator");
+            bool ok = false;
+            foreach (var u in administratori)
+                if (user.Id == u.Id)
+                    ok = true;
+            if (ok)
+            {
+                ViewBag.Echipe = _db.Echipe.Include("Proiect");
+                return View();
+            }
             var currentUserId = (await _userManager.GetUserAsync(User)).Id;
             var Echipe = _db.Echipe.Where(e => e.IdUtilizator == currentUserId).Include("Proiect");
             ViewBag.Echipe = Echipe;   

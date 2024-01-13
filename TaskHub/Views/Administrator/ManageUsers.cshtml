@@ -1,0 +1,19 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h4>Membrii: </h4>
+<ul>
+    @foreach (var membru in ViewBag.Membrii)
+    {
+        <li style="list-style: none"><p style="font-size:25px; margin-bottom:0px">@membru.Email</p></li>
+        <div class="d-flex gap-4">
+            <form method="post" action="/Administrator/Delete/@membru.Email">
+                <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184; color:white" type="submit">Sterge membru</button>
+            </form>
+            <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184; color:white"><a style="color:white;text-decoration:none" href="/Administrator/EditRole/@membru.Email">Schimba rolul</a></button>
+        </div>
+        <br />
+    }
+</ul>

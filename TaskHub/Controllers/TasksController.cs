@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Data;
 using System.Net;
 using System.Runtime.Intrinsics.Arm;
 using System.Security.Claims;
@@ -49,7 +50,19 @@ namespace TaskHub.Controllers
         public async Task<IActionResult> IndexUser()
         {
             var user = await _userManager.GetUserAsync(User);
+            var administratori = await _userManager.GetUsersInRoleAsync("administrator");
+            bool ok = false;
+            foreach (var u in administratori)
+                if (user.Id == u.Id)
+                    ok = true;
             var user_id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (ok == true)
+            {
+                ViewBag.Tasks = db.Tasks;
+                return View();
+            }
+             
+           
             if (db.Tasks.Include("Users").Where(t => t.Users.Any(u => u == user)).Count() > 0)
                 ViewBag.Tasks = db.Tasks.Include("Users").Where(t => t.Users.Any(u => u == user));
             else ViewBag.Tasks = null;
@@ -161,14 +174,20 @@ namespace TaskHub.Controllers
 
         [Route("/tasks/editstatus/{idTask}")]
         [Authorize(Roles = "member,administrator,organizator")]
-        public IActionResult EditStatus(int idTask)
+        public async Task<IActionResult> EditStatus(int idTask)
         {
             var task = db.Tasks.FirstOrDefault(t => t.Id == idTask);
             var user = _userManager.GetUserId(User);
-            if (task.Users.Any(u => u.Id == user) == false)
-            {
-                return Unauthorized();
-            }
+            var organizatori = await _userManager.GetUsersInRoleAsync("organizator");
+            bool ok = false;
+            foreach (var u in organizatori)
+                if (user == u.Id)
+                    ok = true;
+            if (ok == false)
+                if (task.Users.Any(u => u.Id == user) == false)
+                {
+                    return Unauthorized();
+                }
             ViewBag.IdTask = task.Id;
             ViewBag.AvailableStatusOptions = new List<SelectListItem>
             {
@@ -322,16 +341,21 @@ namespace TaskHub.Controllers
         [Authorize(Roles = "membru,administrator")]
         public async Task<IActionResult> AddComentariu(int? idTask, string? content)
         {
-            var user = _userManager.GetUserId(User);
-            Comentariu comentariu = new Comentariu
+            if (ModelState.IsValid)
             {
-                Continut = content,
-                IdTask = (int)idTask,
-                IdUtilizator = user
-            };
-            db.Comentarii.Add(comentariu);
-            db.SaveChanges();
-            return RedirectToAction("Show", new { idTask = idTask });
+                var user = _userManager.GetUserId(User);
+                Comentariu comentariu = new Comentariu
+                {
+                    Continut = content,
+                    IdTask = (int)idTask,
+                    IdUtilizator = user
+                };
+                comentariu.Id = db.Comentarii.Count() + 1;
+                db.Comentarii.Add(comentariu);
+                db.SaveChanges();
+                return RedirectToAction("Show", new { idTask = idTask });
+            }
+            else return View();
         }
         [HttpPost]
         [Route("Tasks/DeleteComentariu/{c?}/{id?}")]

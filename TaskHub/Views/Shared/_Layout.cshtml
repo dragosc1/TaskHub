@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@using TaskHub.Database;
+@inject UserManager<ApplicationUser> UserManager
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -34,6 +37,12 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark text-white w" asp-area="" asp-controller="Tasks" asp-action="IndexUser">Tasks</a>
                         </li>
+                        @if (User.IsInRole("administrator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark text-white w" asp-area="" asp-controller="Administrator" asp-action="ManageUsers">Manage Users As Admin</a>
+                            </li>
+                        }
                     </ul>
                     @Html.Partial("_LoginPartial")
                 </div>
