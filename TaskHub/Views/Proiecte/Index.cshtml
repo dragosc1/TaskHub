@@ -2,21 +2,28 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewBag.Title = "Index";
 }
 
-<h2>Lista Proiectelor</h2>
 <br/>
+
 @foreach(var proiect in ViewBag.Proiecte)
 {
-    <h3>Proiect:</h3>
-    <p>@proiect.NumeProiect</p>
-    <br/>
-    <p>Descriere:</p>
-    <p>@proiect.Descriere</p>
-    <br/>
-    <a href="/Proiecte/Show/@proiect.Id">Afisare Proiect</a>
-    <br/>
-    <a href="/Proiecte/Edit/@proiect.Id">Editare Proiect</a>
-    <hr/>
+    <div style="background-color:#CDCFD0; margin-bottom:1vh; margin-top:1vh; border:0.5vh solid rgb(56, 56, 56); border-radius: 2vh; padding: 10px">
+        <h3>Proiect:</h3>
+        <p style="font-size: 17.5px">@proiect.NumeProiect</p>
+        <h3>Descriere:</h3>
+        <p style="font-size: 17.5px">
+            @proiect.Descriere</p>
+        <div class="d-flex justify-content-between p-2">
+            <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a href="/Proiecte/Show/@proiect.Id" class="text-white" style="text-decoration:none; font-size: 2vh">Afisare Proiect </a></button>
+            <br />
+            <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a href="/Proiecte/Edit/@proiect.Id" class="text-white" style="text-decoration:none; font-size: 2vh">Editare Proiect</a></button>
+        </div>
+    </div>
+    <br />
+    <br />
 }
-<p><a asp-controller="Proiecte" asp-action="New">Proiect nou</a></p>
+<div class="d-flex justify-content-center">
+    <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a asp-controller="Proiecte" asp-action="New" style="color:white; text-decoration:none; font-size: 20px">Proiect nou</a></button>
+</div>

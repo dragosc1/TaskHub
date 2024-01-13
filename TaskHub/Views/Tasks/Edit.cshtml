@@ -1,5 +1,8 @@
 ﻿@model TaskHub.Models.Task
 <h2> Formular editare task</h2>
+@{
+    ViewBag.Title = "Edit";
+}
 @using (Html.BeginForm(actionName: "Edit", controllerName: "Tasks", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
 

@@ -3,6 +3,7 @@
 *@
 @{
     int ProiectId = ViewBag.Id;
+    ViewBag.Title = "New";
 }
 <h2> Formular adaugare task</h2>
 @using (Html.BeginForm(actionName: "New", controllerName: "Tasks", FormMethod.Post, new { enctype = "multipart/form-data" }))

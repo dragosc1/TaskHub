@@ -2,22 +2,24 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewBag.Title = "Show";
 }
-@if (ViewBag.Proiect != null)
-{
-    <h2>@ViewBag.Proiect.NumeProiect</h2>
-    <br />
-    <p>Descriere:</p>
-    <p>@ViewBag.Proiect.Descriere</p>
-    <br />
-    <a href="/Proiecte/Edit/@ViewBag.Proiect.Id">Editare Proiect</a>
-    <br />
-    <form method="post" action="/Proiecte/Delete/@ViewBag.Proiect.Id">
-        <button type="submit">Stergere Proiect</button>
-    </form>
-}
-else
-{
-    <h1>Reload the page</h1>
-}
-
+<div style="background-color:#CDCFD0; margin-bottom:1vh; margin-top:1vh; border:0.5vh solid rgb(56, 56, 56); border-radius: 2vh; padding: 10px">
+    @if (ViewBag.Proiect != null)
+    {
+        <h2>@ViewBag.Proiect.NumeProiect</h2>
+        <br />
+        <h3>Descriere:</h3>
+        <p style="font-size:17.5px">@ViewBag.Proiect.Descriere</p>
+        <div class="d-flex justify-content-between p-2">
+            <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a href="/Proiecte/Edit/@ViewBag.Proiect.Id" class="text-white" style="text-decoration:none; font-size: 2vh">Editare Proiect </a></button>
+            <form method="post" action="/Proiecte/Delete/@ViewBag.Proiect.Id">
+                <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a class="text-white" style="text-decoration:none; font-size: 2vh">Stergere Proiect</a></button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <h1>Reload the page</h1>
+    }
+</div>

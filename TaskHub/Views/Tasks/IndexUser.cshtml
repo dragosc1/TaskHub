@@ -2,6 +2,7 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewBag.Title = "Index User";
 }
 <div class="d-flex justify-content-center">
     <h2>Lista Taskuri User</h2>
@@ -12,7 +13,7 @@
 {
     @foreach (var task in ViewBag.Tasks)
     {
-        <div style="background-color:#CDCFD0; margin-bottom:1vh; margin-top:1vh; border:0.5vh solid rgb(56, 56, 56); border-radius: 2vh; padding: 5px">
+        <div style="background-color:#CDCFD0; margin-bottom:1vh; margin-top:1vh; border:0.5vh solid rgb(56, 56, 56); border-radius: 2vh; padding: 10px">
             <p style="font-size: 3vh">@task.Titlu</p>
             <br />
             <p style="font-size: 2vh">Descriere: @task.Descriere</p>

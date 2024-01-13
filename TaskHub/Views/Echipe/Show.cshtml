@@ -2,28 +2,37 @@
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
+    ViewBag.Title = "Show";
 }
-<h1>Echipa cu proiectul: @ViewBag.Proiect.NumeProiect </h1>
-<br />
-<p>Membrii: </p>
-<ul>
-    @foreach(var membru in ViewBag.Membrii)
+
+<div style="background-color:#CDCFD0; margin-bottom:1vh; margin-top:1vh; border:0.5vh solid rgb(56, 56, 56); border-radius: 2vh; padding: 10px">
+    <h1>Echipa cu proiectul: @ViewBag.Proiect.NumeProiect </h1>
+    <br />
+    <h4>Membrii: </h4>
+    <ul>
+        @foreach(var membru in ViewBag.Membrii)
+        {
+            <li style="list-style: none"><p style="font-size:25px; margin-bottom:0px">@membru</p></li>
+            <form method="post" action="/Echipe/Delete/@membru/@ViewBag.Proiect.Id">
+                <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184; color:white" type="submit">Sterge membru</button>
+            </form>
+            <br />
+        }
+    </ul>
+    <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:#697184"><a href="@Url.Action("New", "Echipe", new { idProiect = ViewBag.Id })" style="color:white; text-decoration:none; font-size:19px">Adauga membru la echipa</a></button>
+    <hr />
+
+    @if (ViewBag.Organizator == true)
     {
-        <li style="list-style: none">@membru</li>
-        <form method="post" action="/Echipe/Delete/@membru/@ViewBag.Proiect.Id">
-            <button type="submit">Sterge membru</button>
-        </form>
+        <h4> Tu esti un organizator al echipei! </h4>
     }
-</ul>
-<a href="@Url.Action("New", "Echipe", new { idProiect = ViewBag.Id })">Adauga membru la echipa</a>
-<hr />
-@if (ViewBag.Organizator == true)
-{
-    <p> Tu esti un organizator al echipei! </p>
-}
-else
-{
-    <p> Tu esti un membru al echipei! </p>
-}
-<h2>Tasks:</h2>
-<a href="@Url.Action("Index", "Tasks", new { idProiect = ViewBag.Id })">Acceseaza task-urile</a>
+    else
+    {
+        <h4> Tu esti un membru al echipei! </h4>
+    }
+    <hr />
+    <div class="d-flex align-items-center">
+        <h3 style="padding-right: 10px">Tasks:</h3>
+        <button style="padding-left: 1vw; padding-right: 1vw; border-radius: 5%; background-color:green"><a href="@Url.Action("Index", "Tasks", new { idProiect = ViewBag.Id })" style="color:white; text-decoration:none; font-size:19px">Acceseaza task-urile</a></button>
+    </div>
+</div>
