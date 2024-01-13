@@ -5,6 +5,9 @@
 }
 @using (Html.BeginForm(actionName: "EditRole", controllerName: "Administrator", FormMethod.Post )) {
     @Html.Hidden("email", (string?)ViewBag.email)
+    
+    @Html.Label("Role")
     @Html.DropDownList("role", ViewBag.AvailableRoles, null, new { @class="form-control"})
+    <br />
     <button type="submit">Schimba rolul</button>
 }
